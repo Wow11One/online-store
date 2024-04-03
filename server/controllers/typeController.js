@@ -1,4 +1,4 @@
-const {Type} = require('../models/models')
+const {Type, Device} = require('../models/models')
 const ApiError = require('../error/ApiError')
 
 class TypeController {
@@ -11,6 +11,16 @@ class TypeController {
     async getAll(req, res) {
         const types = await Type.findAll()
         return res.json(types)
+    }
+
+    async delete(req, res, next) {
+        try {
+            const {id} = req.params
+            Type.destroy({where: {id}})
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
+        }
+        return res.status(200).json({})
     }
 }
 

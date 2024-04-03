@@ -62,6 +62,16 @@ class DeviceController {
 
         return res.json(device)
     }
+
+    async delete(req, res, next) {
+        try {
+            const {id} = req.params
+            Device.destroy({where: {id}})
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
+        }
+        return res.status(200).json({})
+    }
 }
 
 module.exports = new DeviceController()
