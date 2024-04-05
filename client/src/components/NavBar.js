@@ -14,18 +14,18 @@ const NavBar = observer(() => {
         user.setIsAuth(false)
     }
     return (
-        <Navbar bg="dark" data-bs-theme="dark">
+        <Navbar bg="white" data-bs-theme="light" className='shadow-sm'>
             <Container>
                 <Navbar.Brand href={SHOP_ROUTE}>Device.com</Navbar.Brand>
                 {user.isAuth ?
-                    <Nav className='ml-auto align-items-center' style={{color: 'white'}}>
+                    <Nav className='ml-auto align-items-center' >
                         <Button
-                            variant={'outline-light'}
+                            variant='outline-secondary'
                             onClick={() => navigate(ADMIN_ROUTE)}
                         >
                             Admin</Button>
                         <Button
-                            variant={'outline-light'}
+                            variant='outline-secondary'
                             onClick={() => logOut()}
                             className='ms-3'
                         >
@@ -35,7 +35,8 @@ const NavBar = observer(() => {
                     :
                     <Nav className='ml-auto' style={{color: 'white'}}>
                         <Button
-                            variant={'outline-light'}
+                            size='ms-3'
+                            variant='outline-secondary'
                             onClick={() => navigate(LOGIN_ROUTE)}
                         >
                             Log In</Button>
