@@ -1,10 +1,35 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {Button, Card, Container, Form, Row} from "react-bootstrap";
-import {NavLink, useLocation} from 'react-router-dom';
-import {LOGIN_ROUTE, REGISTRATION_ROUTE} from "../utils/consts";
+import {NavLink, useLocation, useNavigate} from 'react-router-dom';
+import {LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts";
+import {login, registration} from "../http/userApi";
+import {observer} from "mobx-react-lite";
+import {Context} from "../index";
 
-const Auth = () => {
+const Auth = observer(() => {
+    const {user} = useContext(Context)
+    const navigate = useNavigate()
     const isLogin = useLocation().pathname === LOGIN_ROUTE
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const click = async (email, password) => {
+        try {
+            let data
+            if (isLogin) {
+                data = await login(email, password)
+            } else {
+                data = await registration(email, password)
+            }
+
+            user.setUser(data)
+            user.setIsAuth(true)
+            navigate(SHOP_ROUTE)
+        } catch (e) {
+            alert(e.response.data.message)
+        }
+    }
+
     return (
         <Container
             className='d-flex justify-content-center align-items-center'
@@ -17,12 +42,18 @@ const Auth = () => {
                     <Form.Control
                         className='mt-4'
                         placeholder='Enter your email...'
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+
                     />
                     <Form.Control
                         className='mt-4'
                         placeholder='Enter your password...'
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        type='password'
                     />
-                    <Row className='d-flex justify-content-between mt-4 ps-2 pe-3'>
+                    <Row className='d-flex justify-content-between align-items-center mt-4 ps-2 pe-3 auth-buttons'>
                         {isLogin ?
                             <div>
                                 No account? <NavLink to={REGISTRATION_ROUTE}>
@@ -36,7 +67,7 @@ const Auth = () => {
                             </NavLink>
                             </div>
                         }
-                        <Button className='auth-button' variant='outline-success'>
+                        <Button onClick={() => click(email, password)} variant='outline-success'>
                             {isLogin ? 'Login' : 'Register'}
                         </Button>
                     </Row>
@@ -44,6 +75,6 @@ const Auth = () => {
             </Card>
         </Container>
     );
-};
+});
 
 export default Auth;
