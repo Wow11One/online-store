@@ -1,38 +1,42 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom'
 import {Button, Card, Col, Container, Image, Row} from "react-bootstrap"
 import bigStar from '../assets/bigStar.png'
 import {fetchOnePairOfShoes} from "../http/shoesApi";
 import {SERVER_URL} from "../utils/consts";
 import SizeList from "../components/SizeList";
+import ShoesInfo from "../components/ShoesInfo";
+import {observer} from "mobx-react-lite";
+import {Context} from "../index";
 
 
-const ShoesPage = () => {
-    const [shoes, setShoes] = useState({info: [], brand: {}, type: {}, sizes: []})
+const ShoesPage = observer(() => {
+    const {shoes} = useContext(Context)
+    const [currShoes, setCurrShoes] = useState({info: [], brand: {}, type: {}, sizes: []})
     const {id} = useParams()
     useEffect(() => {
-        fetchOnePairOfShoes(id).then(data => setShoes(data))
+        fetchOnePairOfShoes(id).then(data => setCurrShoes(data))
     }, [])
-    console.log(shoes)
+    console.log(currShoes)
     return (
         <Container className='mt-4'>
             <Row>
                 <Col md={5}>
-                    <Image width={'90%'} height={500} src={SERVER_URL + shoes.img}/>
+                    <Image width={'95%'} height={500} src={SERVER_URL + currShoes.img}/>
                 </Col>
                 <Col md={7}>
                     <Row className='justify-content-between mt-4'>
                         <div style={{width: '50%'}}>
                             <h5 style={{fontWeight: 'normal', textTransform: 'uppercase'}}>
-                                {shoes.name}
+                                {currShoes.name}
                             </h5>
                             <div className='mt-3 details'>
                             <span>
-                                Producer: {shoes.brand.name}
+                                Producer: {currShoes.brand.name}
                             </span>
                                 <br/>
                                 <span className='mt-0'>
-                                Type: {shoes.type.name}
+                                Type: {currShoes.type.name}
                             </span>
                             </div>
                         </div>
@@ -52,26 +56,24 @@ const ShoesPage = () => {
                                     marginTop: '10%'
                                 }}
                             >
-                                {shoes.price} HRN</p>
+                                {currShoes.price} HRN</p>
                         </Card>
                     </Row>
-                    <SizeList sizeList={shoes.sizes}/>
+                    <SizeList sizeList={currShoes.sizes}/>
 
+                    <Button
+                        variant='dark'
+                        style={{minWidth: 150, minHeight: 40, fontSize: 18}}
+                        className='mt-5'
+                        disabled={currShoes.sizes.length === 0 || shoes.selectedSize === 0}
+                    >
+                        Add to Bag
+                    </Button>
                 </Col>
             </Row>
-            <Row className='d-flex flex-column mt-1'>
-                <h4>Shoes info:</h4>
-                {shoes.info.map((info, index) =>
-                    <Row key={info.id} style={{
-                        background: index % 2 === 0 ? 'lightgray' : 'transparent',
-                        padding: 10
-                    }}>
-                        {info.title}: {info.description}
-                    </Row>
-                )}
-            </Row>
+            <ShoesInfo info={currShoes.info}/>
         </Container>
     );
-};
+});
 
 export default ShoesPage;

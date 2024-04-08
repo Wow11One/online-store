@@ -13,6 +13,7 @@ export default class ShoesStore {
         this._search = ''
         this._sortCriteria = []
         this._selectedSortCriterion = ''
+        this._selectedSize = 0
         makeAutoObservable(this)
     }
 
@@ -58,6 +59,14 @@ export default class ShoesStore {
 
     setSelectedSortCriterion(value) {
         this._selectedSortCriterion = value;
+    }
+
+    setSelectedSize(value) {
+        this._selectedSize = value;
+    }
+
+    get selectedSize() {
+        return this._selectedSize;
     }
 
     get sortCriteria() {

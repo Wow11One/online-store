@@ -39,3 +39,11 @@ body {
 .list-group-item-mine {
     background-color: #f1f9fb;
 }
+
+.info > * {
+    padding: 0 0 0 0;
+}
+
+.row > p {
+    padding: 0 0 0 0;
+}
