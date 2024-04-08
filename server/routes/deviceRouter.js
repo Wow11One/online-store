@@ -1,12 +1,12 @@
 const Router = require('express')
 const router = new Router()
-const deviceController = require('../controllers/deviceController')
+const shoesController = require('../controllers/shoesController')
 const checkRole = require("../middleware/checkRoleMiddleware");
-const typeController = require("../controllers/typeController");
 
-router.post('/', checkRole('ADMIN'), deviceController.create)
-router.get('/', deviceController.getAll)
-router.get('/:id', deviceController.getOne)
-router.delete('/:id', checkRole('ADMIN'), deviceController.delete)
+router.post('/', checkRole('ADMIN'), shoesController.create)
+router.get('/', shoesController.getAll)
+router.get('/sort-criteria', shoesController.getSortCriteria)
+router.get('/:id', shoesController.getOne)
+router.delete('/:id', checkRole('ADMIN'), shoesController.delete)
 
 module.exports = router

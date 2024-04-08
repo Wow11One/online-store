@@ -1,36 +1,47 @@
 import React, {useContext, useEffect} from 'react';
-import {Col, Container, DropdownButton, Row, Dropdown} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import TypeBar from "../components/TypeBar";
 import BrandBar from "../components/BrandBar";
-import DeviceList from "../components/DeviceList";
+import ShoesList from "../components/ShoesList";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
-import {fetchBrands, fetchDevices, fetchTypes} from "../http/deviceApi";
+import {fetchBrands, fetchShoesList, fetchSortCriteria, fetchTypes} from "../http/shoesApi";
 import Pages from "../components/Pages";
-import SortSearchBar from "../components/SortSearchBar";
+import SearchBar from "../components/SearchBar";
+import OrderBar from "../components/OrderBar";
 
 const Shop = observer(() => {
-    const {device} = useContext(Context)
-    const pageLimit = 2
+    const {shoes} = useContext(Context)
     useEffect(() => {
-        fetchTypes().then(data => device.setTypes(data))
-        fetchBrands().then(data => device.setBrands(data))
-        fetchDevices(undefined, undefined, 1, pageLimit).then(data => {
-            device.setLimit(pageLimit)
-            device.setDevices(data.rows)
-            device.setTotalCount(data.count)
+        fetchTypes().then(data => shoes.setTypes(data))
+        fetchBrands().then(data => shoes.setBrands(data))
+        fetchSortCriteria().then(data => {
+            shoes.setSortCriteria(data)
+            shoes.setSelectedSortCriterion(data[0] || '')
+        })
 
+        fetchShoesList(undefined,
+            undefined,
+            1,
+            shoes.limit,
+            '',
+            shoes.selectedSortCriterion).then(data => {
+            shoes.setShoesList(data.rows)
+            shoes.setTotalCount(data.count)
         })
     }, [])
 
     useEffect(() => {
-        fetchDevices(device.selectedType.id, device.selectedBrand.id, device.page, pageLimit).then(data => {
-            device.setLimit(pageLimit)
-            device.setDevices(data.rows)
-            device.setTotalCount(data.count)
-
+        fetchShoesList(shoes.selectedType.id,
+            shoes.selectedBrand.id,
+            shoes.page,
+            shoes.limit,
+            shoes.search,
+            shoes.selectedSortCriterion).then(data => {
+            shoes.setShoesList(data.rows)
+            shoes.setTotalCount(data.count)
         })
-    }, [device.page, device.selectedType, device.selectedBrand])
+    }, [shoes.page, shoes.selectedType, shoes.selectedBrand, shoes.search, shoes.selectedSortCriterion])
 
     return (
         <Container>
@@ -40,8 +51,14 @@ const Shop = observer(() => {
                     <BrandBar/>
                 </Col>
                 <Col lg={9}>
-                    <SortSearchBar/>
-                    <DeviceList/>
+                    <Row className='mt-1 d-flex justify-content-between'
+                         style={{width: '92.5%'}}
+                    >
+                        <SearchBar/>
+                        <OrderBar/>
+                    </Row>
+
+                    <ShoesList/>
                     <Pages/>
                 </Col>
             </Row>

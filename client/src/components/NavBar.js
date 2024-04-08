@@ -16,14 +16,15 @@ const NavBar = observer(() => {
     return (
         <Navbar bg="white" data-bs-theme="light" className='shadow-sm'>
             <Container>
-                <Navbar.Brand href={SHOP_ROUTE}>Device.com</Navbar.Brand>
+                <Navbar.Brand href={SHOP_ROUTE}>Shoes.com</Navbar.Brand>
                 {user.isAuth ?
                     <Nav className='ml-auto align-items-center' >
                         <Button
                             variant='outline-secondary'
                             onClick={() => navigate(ADMIN_ROUTE)}
                         >
-                            Admin</Button>
+                            Admin
+                        </Button>
                         <Button
                             variant='outline-secondary'
                             onClick={() => logOut()}

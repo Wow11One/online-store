@@ -12,17 +12,23 @@ const Basket = sequelize.define('basket', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 })
 
-const BasketDevice = sequelize.define('basket_device', {
+const BasketShoes = sequelize.define('basket_device', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 })
 
-const Device = sequelize.define('device', {
+const Shoes = sequelize.define('shoes', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
     price: {type: DataTypes.INTEGER, allowNull: false},
     rating: {type: DataTypes.INTEGER, defaultValue: 0},
     img: {type: DataTypes.STRING, allowNull: false}
 })
+
+const ShoesSizes = sequelize.define('shoes_sizes', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    sizeValue: {type: DataTypes.DOUBLE, allowNull: false}
+})
+
 
 const Type = sequelize.define('type', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
@@ -39,7 +45,7 @@ const Rating = sequelize.define('rating', {
     rate: {type: DataTypes.INTEGER, allowNull: false}
 })
 
-const DeviceInfo = sequelize.define('device_info', {
+const ShoesInfo = sequelize.define('shoes_info', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     title: {type: DataTypes.STRING, allowNull: false},
     description: {type: DataTypes.STRING, allowNull: false}
@@ -49,26 +55,29 @@ const TypeBrand = sequelize.define('type_brand', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}
 })
 
+Shoes.hasMany(ShoesSizes, {as: 'sizes'})
+ShoesSizes.belongsTo(Shoes)
+
 User.hasOne(Basket)
 Basket.belongsTo(User)
 
 User.hasMany(Rating)
 Rating.belongsTo(User)
 
-Basket.hasMany(BasketDevice)
-BasketDevice.belongsTo(Basket)
+Basket.hasMany(BasketShoes)
+BasketShoes.belongsTo(Basket)
 
-Type.hasMany(Device)
-Device.belongsTo(Type)
+Type.hasMany(Shoes)
+Shoes.belongsTo(Type)
 
-Brand.hasMany(Device)
-Device.belongsTo(Brand)
+Brand.hasMany(Shoes)
+Shoes.belongsTo(Brand)
 
-Device.hasMany(Rating)
-Rating.belongsTo(Device)
+Shoes.hasMany(Rating)
+Rating.belongsTo(Shoes)
 
-Device.hasMany(DeviceInfo, {as: 'info'})
-DeviceInfo.belongsTo(Device)
+Shoes.hasMany(ShoesInfo, {as: 'info'})
+ShoesInfo.belongsTo(Shoes)
 
 Type.belongsToMany(Brand, {through: TypeBrand})
 Brand.belongsToMany(Type, {through: TypeBrand})
@@ -76,12 +85,12 @@ Brand.belongsToMany(Type, {through: TypeBrand})
 module.exports = {
     User,
     Basket,
-    BasketDevice,
-    Device,
+    BasketShoes,
+    ShoesSizes,
+    Shoes,
     Type,
     Brand,
     Rating,
-    DeviceInfo,
+    ShoesInfo,
     TypeBrand
-
 }

@@ -1,15 +1,18 @@
 import {makeAutoObservable} from "mobx";
 
-export default class DeviceStore {
+export default class ShoesStore {
     constructor() {
         this._types = []
         this._brands = []
-        this._devices = []
+        this._shoesList = []
         this._selectedType = {}
         this._selectedBrand = {}
         this._page = 1
         this._totalCount = 0
         this._limit = 2
+        this._search = ''
+        this._sortCriteria = []
+        this._selectedSortCriterion = ''
         makeAutoObservable(this)
     }
 
@@ -29,8 +32,8 @@ export default class DeviceStore {
         this._brands = brands
     }
 
-    setDevices(devices) {
-        this._devices = devices
+    setShoesList(shoesList) {
+        this._shoesList = shoesList
     }
 
     setPage(page) {
@@ -45,6 +48,31 @@ export default class DeviceStore {
         this._limit = value;
     }
 
+    setSearch(search) {
+        this._search = search;
+    }
+
+    setSortCriteria(value) {
+        this._sortCriteria = value;
+    }
+
+    setSelectedSortCriterion(value) {
+        this._selectedSortCriterion = value;
+    }
+
+    get sortCriteria() {
+        return this._sortCriteria;
+    }
+
+
+    get selectedSortCriterion() {
+        return this._selectedSortCriterion;
+    }
+
+    get search() {
+        return this._search;
+    }
+
     get limit() {
         return this._limit;
     }
@@ -57,8 +85,8 @@ export default class DeviceStore {
         return this._page
     }
 
-    get devices() {
-        return this._devices
+    get shoesList() {
+        return this._shoesList
     }
 
     get brands() {
