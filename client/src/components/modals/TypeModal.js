@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Button, Form, Modal} from "react-bootstrap";
 import {createType} from "../../http/shoesApi";
 
-const CreateType = ({show, onHide}) => {
+const TypeModal = ({show, onHide}) => {
     const [value, setValue] = useState('')
     const addType = () => {
         createType({name: value}).then(data => setValue(''))
@@ -39,4 +39,4 @@ const CreateType = ({show, onHide}) => {
     );
 };
 
-export default CreateType;
+export default TypeModal;

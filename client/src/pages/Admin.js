@@ -1,36 +1,57 @@
-import React, {useState} from 'react';
-import {Button, Container} from "react-bootstrap";
-import CreateType from "../components/modals/CreateType";
-import CreateDevice from "../components/modals/CreateDevice";
-import CreateBrand from "../components/modals/CreateBrand";
+import React, {useContext, useState} from 'react';
+import {Button, Col, Container, ListGroup, Row, Table} from "react-bootstrap";
+import TypeModal from "../components/modals/TypeModal";
+import DeviceModal from "../components/modals/DeviceModal";
+import TypeBrandModal from "../components/modals/TypeBrandModal";
+import {Context} from "../index";
+import {observer} from "mobx-react-lite";
+import AdminSection from "../components/AdminSection";
+import BrandSection from '../components/BrandSection'
+import BrandTypeTable from "../components/BrandTypeTable";
 
-const Admin = () => {
+const Admin = observer(() => {
+    const {brand, type, shoes} = useContext(Context)
     const [brandVisible, setBrandVisible] = useState(false)
     const [typeVisible, setTypeVisible] = useState(false)
     const [deviceVisible, setDeviceVisible] = useState(false)
+    const adminSections = ['Brands', 'Types', 'Shoes', 'Orders']
+    const [section, setSection] = useState('Brands')
+    const chooseSection = (section) => {
+        setSection(section)
+    }
+
+    const renderSection = (section) => {
+        switch (section) {
+            case adminSections[0]:
+                return <BrandSection/>
+                break
+            default:
+                return 'foo';
+        }
+    }
 
     return (
         <Container className='d-flex flex-column'>
-            <Button className='mt-2'
-                    variant='outline-dark'
-                    onClick={() => setTypeVisible(true)}
-            >
-                Add type</Button>
-            <Button className='mt-2'
-                    onClick={() => setBrandVisible(true)}
-                    variant='outline-dark'
-            >
-                Add Brand</Button>
-            <Button className='mt-2'
-                    onClick={() => setDeviceVisible(true)}
-                    variant='outline-dark'
-            >
-                Add Device</Button>
-            <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)}/>
-            <CreateType show={typeVisible} onHide={() => setTypeVisible(false)}/>
-            <CreateDevice show={deviceVisible} onHide={() => setDeviceVisible(false)}/>
+            <Row className='mt-3'>
+                <Col md={3}>
+                    <ListGroup className='shadow-sm'>
+                        {adminSections.map(sec =>
+                            <AdminSection
+                                adminSection={sec}
+                                onClick={() => chooseSection(sec)}
+                                active={section === sec}
+                                key={sec}
+                            />
+                        )}
+                    </ListGroup>
+                </Col>
+                <Col lg={9}>
+
+                    <BrandSection/>
+                </Col>
+            </Row>
         </Container>
     );
-};
+});
 
 export default Admin;

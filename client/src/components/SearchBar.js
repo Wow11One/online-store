@@ -1,23 +1,20 @@
 import React, {useContext, useState} from 'react';
-import {Button, Dropdown, DropdownButton, Form, InputGroup, Row} from "react-bootstrap";
+import {Button, Form, InputGroup} from "react-bootstrap";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import {ORDER_PRICE_ASC, ORDER_PRICE_DESC} from "../utils/consts";
 
-const SearchBar = observer(() => {
-    const {shoes} = useContext(Context)
-
-    const searchShoes = (search) => {
-        shoes.setPage(1)
-        shoes.setSearch(search)
+const SearchBar = observer(({context}) => {
+    const search = (search) => {
+        context.setPage(1)
+        context.setSearch(search)
     }
     return (
         <InputGroup style={{width: 'auto'}}>
             <div style={{width: 250}}>
                 <Form.Control className='rounded-left py-1'
                               placeholder="Enter the name"
-                              value={shoes.search}
-                              onChange={e => searchShoes(e.target.value)}
+                              value={context.search}
+                              onChange={e => search(e.target.value)}
                               style={{
                                   borderTopRightRadius: 0,
                                   borderBottomRightRadius: 0,

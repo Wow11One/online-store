@@ -53,7 +53,7 @@ class ShoesController {
         if (typeId) {
             queryParameters.typeId = typeId
         }
-        if (search && search.trim().length) {
+        if (search && search.trim().length !== 0) {
             queryParameters.name = {[Op.iLike]: '%' + search.trim() + '%'}
         }
 
@@ -81,7 +81,7 @@ class ShoesController {
                 {model: Brand, as: 'brand'},
                 {model: Type, as: 'type'}
             ],
-            order: [[{ model: ShoesSizes, as: 'sizes' }, 'sizeValue', 'asc']]
+            order: [[{model: ShoesSizes, as: 'sizes'}, 'sizeValue', 'asc']]
         })
 
         return res.json(device)

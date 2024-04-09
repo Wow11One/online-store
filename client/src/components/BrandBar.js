@@ -2,15 +2,9 @@ import React, {useContext, useEffect, useState} from 'react';
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {Card, Dropdown, Row} from "react-bootstrap";
-import {fetchBrands, fetchTypes} from "../http/shoesApi";
 
 const BrandBar = observer(() => {
-    const {shoes} = useContext(Context)
-
-    useEffect(() => {
-        fetchBrands().then(data => shoes.setBrands(data))
-        shoes.setSelectedBrand({})
-    }, [])
+    const {shoes, brand} = useContext(Context)
 
     return (
         <Card
@@ -34,7 +28,7 @@ const BrandBar = observer(() => {
                         >
                             any brand
                         </Dropdown.Item>
-                        {shoes.brands.map(brand =>
+                        {brand.brands.map(brand =>
                             <Dropdown.Item
                                 onClick={() => shoes.setSelectedBrand(brand)}
                                 key={brand.id}

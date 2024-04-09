@@ -5,6 +5,7 @@ import {LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts";
 import {login, registration} from "../http/userApi";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
+import {runInAction} from "mobx";
 
 const Auth = observer(() => {
     const {user} = useContext(Context)
@@ -21,9 +22,11 @@ const Auth = observer(() => {
             } else {
                 data = await registration(email, password)
             }
+            runInAction(() => {
+                user.setUser(data)
+                user.setIsAuth(true)
+            })
 
-            user.setUser(data)
-            user.setIsAuth(true)
             navigate(SHOP_ROUTE)
         } catch (e) {
             alert(e.response.data.message)

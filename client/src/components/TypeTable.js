@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Basket = () => {
+const TypeSection = () => {
     return (
         <div>
-            heello
+
         </div>
     );
 };
 
-export default Basket;
+export default TypeSection;

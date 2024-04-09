@@ -6,18 +6,42 @@ export const createType = async (type) => {
     return data
 }
 
-export const fetchTypes = async () => {
-    const {data} = await $host.get('api/types')
+export const updateType = async (type) => {
+    const {data} = await $authHost.put('api/types/' + type.id, type)
+    return data
+}
+
+export const deleteType = async (id) => {
+    const {data} = await $authHost.delete('api/types/' + id)
+    return data
+}
+
+export const fetchTypes = async (search = '', page = 1, limit) => {
+    const {data} = await $host.get('api/types', {
+        params: {search, page, limit}
+    })
     return data
 }
 
 export const createBrand = async (brand) => {
-    const {data} = await $authHost.post('api/types', brand)
+    const {data} = await $authHost.post('api/brands', brand)
     return data
 }
 
-export const fetchBrands = async () => {
-    const {data} = await $host.get('api/brands')
+export const updateBrand = async (brand) => {
+    const {data} = await $authHost.put('api/brands/' + brand.id, brand)
+    return data
+}
+
+export const deleteBrand = async (id) => {
+    const {data} = await $authHost.delete('api/brands/' + id)
+    return data
+}
+
+export const fetchBrands = async (search = '', page = 1, limit) => {
+    const {data} = await $host.get('api/brands', {
+        params: {search, page, limit}
+    })
     return data
 }
 
@@ -41,6 +65,6 @@ export const fetchShoesList = async (typeId, brandId, page, limit = 5, search, o
 }
 
 export const fetchSortCriteria = async () => {
-    const {data} = await $host.get('api/shoes/sort-criteria' )
+    const {data} = await $host.get('api/shoes/sort-criteria')
     return data
 }

@@ -4,7 +4,7 @@ import {Context} from "../index";
 import {ListGroup} from "react-bootstrap";
 
 const TypeBar = observer(() => {
-    const {shoes} = useContext(Context)
+    const {type, shoes} = useContext(Context)
 
     const chooseType = (type) => {
         if (type === shoes.selectedType) {
@@ -16,7 +16,7 @@ const TypeBar = observer(() => {
 
     return (
         <ListGroup className='shadow-sm'>
-            {shoes.types.map(type =>
+            {type.types.map(type =>
                 <ListGroup.Item
                     variant={'light'}
                     style={{cursor: 'pointer'}}

@@ -67,10 +67,10 @@ Rating.belongsTo(User)
 Basket.hasMany(BasketShoes)
 BasketShoes.belongsTo(Basket)
 
-Type.hasMany(Shoes)
+Type.hasMany(Shoes, {onDelete: 'CASCADE'})
 Shoes.belongsTo(Type)
 
-Brand.hasMany(Shoes)
+Brand.hasMany(Shoes, {onDelete: 'CASCADE'})
 Shoes.belongsTo(Brand)
 
 Shoes.hasMany(Rating)

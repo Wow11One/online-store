@@ -4,8 +4,8 @@ import {Context} from "../../index";
 import {createDevice, fetchBrands, fetchTypes} from "../../http/shoesApi";
 import {observer} from "mobx-react-lite";
 
-const CreateDevice = observer(({show, onHide}) => {
-    const {device} = useContext(Context)
+const DeviceModal = observer(({show, onHide}) => {
+    const {shoes} = useContext(Context)
     const [info, setInfo] = useState([])
     const [name, setName] = useState('')
     const [price, setPrice] = useState(0)
@@ -14,8 +14,8 @@ const CreateDevice = observer(({show, onHide}) => {
     const [type, setType] = useState(null)
 
     useEffect(() => {
-        fetchTypes().then(data => device.setTypes(data))
-        fetchBrands().then(data => device.setBrands(data))
+        fetchTypes().then(data => shoes.setTypes(data))
+        fetchBrands().then(data => shoes.setBrands(data))
 
     }, [])
 
@@ -36,8 +36,8 @@ const CreateDevice = observer(({show, onHide}) => {
         formData.append('name', name)
         formData.append('price', price)
         formData.append('img', file)
-        formData.append('brandId', device.selectedBrand.id)
-        formData.append('typeId', device.selectedType.id)
+        formData.append('brandId', shoes.selectedBrand.id)
+        formData.append('typeId', shoes.selectedType.id)
         formData.append('info', JSON.stringify(info))
         createDevice(formData).then(data => onHide())
     }
@@ -59,12 +59,12 @@ const CreateDevice = observer(({show, onHide}) => {
                 <Form>
                     <Dropdown className='mt-3'>
                         <Dropdown.Toggle variant={'secondary'}>
-                            {device.selectedType.name || 'Choose type'}
+                            {shoes.selectedType.name || 'Choose type'}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {device.types.map(type =>
+                            {shoes.types.map(type =>
                                 <Dropdown.Item
-                                    onClick={() => device.setSelectedType(type)}
+                                    onClick={() => shoes.setSelectedType(type)}
                                     key={type.id}
                                 >
                                     {type.name}
@@ -74,12 +74,12 @@ const CreateDevice = observer(({show, onHide}) => {
                     </Dropdown>
                     <Dropdown className='mt-3'>
                         <Dropdown.Toggle variant={'secondary'}>
-                            {device.selectedBrand.name || 'Choose brand'}
+                            {shoes.selectedBrand.name || 'Choose brand'}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {device.brands.map(brand =>
+                            {shoes.brands.map(brand =>
                                 <Dropdown.Item
-                                    onClick={() => device.setSelectedBrand(brand)}
+                                    onClick={() => shoes.setSelectedBrand(brand)}
                                     key={brand.id}
                                 >
                                     {brand.name}
@@ -149,4 +149,4 @@ const CreateDevice = observer(({show, onHide}) => {
     )
 })
 
-export default CreateDevice;
+export default DeviceModal;

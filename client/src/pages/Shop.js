@@ -11,10 +11,13 @@ import SearchBar from "../components/SearchBar";
 import OrderBar from "../components/OrderBar";
 
 const Shop = observer(() => {
-    const {shoes} = useContext(Context)
+    const {shoes, brand, type} = useContext(Context)
     useEffect(() => {
-        fetchTypes().then(data => shoes.setTypes(data))
-        fetchBrands().then(data => shoes.setBrands(data))
+        fetchTypes().then(data => type.setTypes(data.rows))
+        fetchBrands().then(data => {
+            brand.setBrands(data.rows)
+            shoes.setSelectedBrand({})
+        })
         fetchSortCriteria().then(data => {
             shoes.setSortCriteria(data)
             shoes.setSelectedSortCriterion(data[0] || '')
@@ -54,12 +57,12 @@ const Shop = observer(() => {
                     <Row className='mt-1 d-flex justify-content-between'
                          style={{width: '92.5%'}}
                     >
-                        <SearchBar/>
+                        <SearchBar context={shoes}/>
                         <OrderBar/>
                     </Row>
 
                     <ShoesList/>
-                    <Pages/>
+                    <Pages context={shoes}/>
                 </Col>
             </Row>
         </Container>

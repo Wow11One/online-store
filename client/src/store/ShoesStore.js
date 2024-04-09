@@ -2,8 +2,6 @@ import {makeAutoObservable} from "mobx";
 
 export default class ShoesStore {
     constructor() {
-        this._types = []
-        this._brands = []
         this._shoesList = []
         this._selectedType = {}
         this._selectedBrand = {}
@@ -17,9 +15,6 @@ export default class ShoesStore {
         makeAutoObservable(this)
     }
 
-    setTypes(types) {
-        this._types = types
-    }
 
     setSelectedType(type) {
         this._selectedType = type
@@ -29,9 +24,6 @@ export default class ShoesStore {
         this._selectedBrand = brand
     }
 
-    setBrands(brands) {
-        this._brands = brands
-    }
 
     setShoesList(shoesList) {
         this._shoesList = shoesList
@@ -96,14 +88,6 @@ export default class ShoesStore {
 
     get shoesList() {
         return this._shoesList
-    }
-
-    get brands() {
-        return this._brands
-    }
-
-    get types() {
-        return this._types
     }
 
     get selectedType() {
