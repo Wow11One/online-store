@@ -1,8 +1,8 @@
 import React, {useContext, useState} from 'react';
 import {Button, Row, Table} from "react-bootstrap";
-import TypeBrandModal from "./modals/TypeBrandModal";
-import {Context} from "../index";
-import Pages from "./Pages";
+import TypeBrandModal from "../modals/TypeBrandModal";
+import {Context} from "../../index";
+import Pages from "../Pages";
 
 const BrandTypeTable = ({data, updateAction, deleteAction, context}) => {
     const [modalVisible, setModalVisible] = useState(false)
@@ -25,7 +25,7 @@ const BrandTypeTable = ({data, updateAction, deleteAction, context}) => {
                 </thead>
                 <tbody>
 
-                {data.brands.map((item, index) =>
+                {data.list.map((item, index) =>
                     <tr key={item.id}>
                         <td>{(index + 1) + context.limit * (context.page - 1)}</td>
                         <td>{item.name}</td>

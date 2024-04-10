@@ -7,6 +7,7 @@ export default class TypeStore {
         this._totalCount = 0
         this._limit = 2
         this._search = ''
+        this._selected = {name: '', id: -1}
         makeAutoObservable(this)
     }
 
@@ -28,6 +29,15 @@ export default class TypeStore {
 
     get search() {
         return this._search;
+    }
+
+
+    get selected() {
+        return this._selected;
+    }
+
+    setSelected(value) {
+        this._selected = value;
     }
 
     setTypes(value) {

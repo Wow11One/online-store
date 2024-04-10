@@ -5,9 +5,9 @@ import DeviceModal from "../components/modals/DeviceModal";
 import TypeBrandModal from "../components/modals/TypeBrandModal";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
-import AdminSection from "../components/AdminSection";
-import BrandSection from '../components/BrandSection'
-import BrandTypeTable from "../components/BrandTypeTable";
+import AdminSections from "../components/admin/AdminSections";
+import BrandSection from '../components/admin/BrandSection'
+import TypeSection from "../components/admin/TypeSection";
 
 const Admin = observer(() => {
     const {brand, type, shoes} = useContext(Context)
@@ -24,9 +24,8 @@ const Admin = observer(() => {
         switch (section) {
             case adminSections[0]:
                 return <BrandSection/>
-                break
-            default:
-                return 'foo';
+            case adminSections[1]:
+                return <TypeSection/>;
         }
     }
 
@@ -36,7 +35,7 @@ const Admin = observer(() => {
                 <Col md={3}>
                     <ListGroup className='shadow-sm'>
                         {adminSections.map(sec =>
-                            <AdminSection
+                            <AdminSections
                                 adminSection={sec}
                                 onClick={() => chooseSection(sec)}
                                 active={section === sec}
@@ -46,8 +45,7 @@ const Admin = observer(() => {
                     </ListGroup>
                 </Col>
                 <Col lg={9}>
-
-                    <BrandSection/>
+                    {renderSection(section)}
                 </Col>
             </Row>
         </Container>

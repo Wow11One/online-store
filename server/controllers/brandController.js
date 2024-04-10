@@ -12,19 +12,21 @@ class BrandController {
     async getAll(req, res) {
         let {page, limit, search} = req.query
         const queryParameters = {}
-        let paginationParameters = {}
+        let additionalParameters = {}
         if (limit) {
             page = page || 1
             let offset = page * limit - limit
-            paginationParameters = {offset, limit}
+            additionalParameters = {offset, limit}
         }
         if (search && search.trim().length !== 0) {
             queryParameters.name = {[Op.iLike]: '%' + search.trim() + '%'}
         }
+        additionalParameters.order = [['createdAt', 'asc']]
         const brands = await Brand.findAndCountAll({
             where: queryParameters,
-            ...paginationParameters
+            ...additionalParameters
         })
+
         return res.json(brands)
     }
 

@@ -1,45 +1,53 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Row} from "react-bootstrap";
-import TypeBrandModal from "./modals/TypeBrandModal";
-import {createBrand, deleteBrand, fetchBrands, fetchShoesList, updateBrand} from "../http/shoesApi";
+import TypeBrandModal from "../modals/TypeBrandModal";
+import {
+    createBrand,
+    createType,
+    deleteBrand, deleteType,
+    fetchBrands,
+    fetchShoesList,
+    fetchTypes,
+    updateBrand, updateType
+} from "../../http/shoesApi";
 import BrandTypeTable from "./BrandTypeTable";
 import {observer} from "mobx-react-lite";
-import {Context} from "../index";
-import SearchBar from "./SearchBar";
+import {Context} from "../../index";
+import SearchBar from "../SearchBar";
 
-const BrandSection = observer(() => {
+const TypeSection = observer(() => {
     const [modalVisible, setModalVisible] = useState(false)
-    const {brand} = useContext(Context)
+    const {type} = useContext(Context)
 
 
     useEffect(() => {
-        fetchBrands(brand.search, 1, brand.limit).then(data => {
-            brand.setBrands(data.rows)
-            brand.setTotalCount(data.count)
+        fetchTypes(type.search, 1, type.limit).then(data => {
+            type.setTypes(data.rows)
+            type.setTotalCount(data.count)
         })
     }, [])
 
     useEffect(() => {
-        fetchBrands(
-            brand.search,
-            brand.page,
-            brand.limit
+        fetchTypes(
+            type.search,
+            type.page,
+            type.limit
         ).then(data => {
-            brand.setBrands(data.rows)
-            brand.setTotalCount(data.count)
-            brand.setPage(brand.page)
+            type.setTypes(data.rows)
+            type.setTotalCount(data.count)
+            type.setPage(type.page)
         })
-    }, [brand.page, brand.search, brand.totalCount])
+    }, [type.page, type.search, type.totalCount])
 
     const add = (onHide, context) => {
-        createBrand({name: context.selected.name})
+        createType({name: context.selected.name})
             .then(data => {
                 context.setPage(1)
-                fetchBrands(brand.search, context.page, brand.limit)
+                fetchTypes(type.search, context.page, type.limit)
                     .then(data => {
-                        context.setBrands(data.rows)
-                        brand.setTotalCount(data.count)
-                        brand.setPage(brand.page)
+                        context.setTypes(data.rows)
+                        type.setTotalCount(data.count)
+                        type.setPage(type.page)
                         context.setSelected({name: '', id: ''})
                     })
             })
@@ -48,8 +56,8 @@ const BrandSection = observer(() => {
     }
 
     const change = (onHide, context) => {
-        updateBrand(context.selected).then(data => {
-            context.setBrands(context.brands.map(item => {
+        updateType(context.selected).then(data => {
+            context.setTypes(context.types.map(item => {
                 if (item.id === data.id) {
                     item.name = data.name
                 }
@@ -63,10 +71,10 @@ const BrandSection = observer(() => {
     }
 
     const remove = (context, id) => {
-        deleteBrand(id).then(data => {
-            context.setBrands(context.brands.filter(brand => brand.id !== id))
+        deleteType(id).then(data => {
+            context.setTypes(context.types.filter(type => type.id !== id))
             context.setTotalCount(context.totalCount - 1)
-            if (context.brands.length === 0) {
+            if (context.types.length === 0) {
                 context.setPage(context.page - 1)
             }
         })
@@ -81,29 +89,29 @@ const BrandSection = observer(() => {
                     variant='outline-dark'
                     onClick={() => {
                         setModalVisible(true)
-                        brand.setSelected({name: '', id: -2})
+                        type.setSelected({name: '', id: -2})
                     }}
                     style={{width: 'auto'}}
                 >
-                    Create brand
+                    Create type
                 </Button>
-                <SearchBar context={brand}/>
+                <SearchBar context={type}/>
             </Row>
             <BrandTypeTable
-                data={{brands: brand.brands}}
+                data={{list: type.types}}
                 updateAction={change}
                 deleteAction={remove}
-                context={brand}
+                context={type}
             />
             <TypeBrandModal show={modalVisible}
                             onHide={() => setModalVisible(false)}
                             actionName='Create'
-                            actionTarget='brand'
+                            actionTarget='type'
                             action={add}
-                            context={brand}
+                            context={type}
             />
         </Row>
     )
 })
 
-export default BrandSection;
+export default TypeSection;

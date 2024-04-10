@@ -12,21 +12,33 @@ class TypeController {
     async getAll(req, res) {
         let {page, limit, search} = req.query
         const queryParameters = {}
-        let paginationParameters = {}
+        let additionalParams = {}
         if (limit) {
             console.log()
             page = page || 1
             let offset = page * limit - limit
-            paginationParameters = {offset, limit}
+            additionalParams = {offset, limit}
         }
         if (search && search.trim().length !== 0) {
             queryParameters.name = {[Op.iLike]: '%' + search.trim() + '%'}
         }
+        additionalParams.order = [['createdAt', 'asc']]
         const types = await Type.findAndCountAll({
             where: queryParameters,
-            ...paginationParameters
+            ...additionalParams
         })
+
         return res.json(types)
+    }
+
+    async update(req, res, next) {
+        const {id} = req.params
+        const {name} = req.body
+        const typeToBeUpdated = await Type.findOne({where: {id}})
+        await typeToBeUpdated.update({name})
+        await typeToBeUpdated.save()
+
+        return res.json(typeToBeUpdated)
     }
 
     async delete(req, res, next) {
