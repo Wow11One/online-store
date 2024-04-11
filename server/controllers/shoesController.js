@@ -2,8 +2,9 @@ const uuid = require('uuid')
 const path = require('path')
 const {Shoes, ShoesInfo, Brand, Type, ShoesSizes} = require('../models/models')
 const ApiError = require('../error/ApiError')
-const {SORT_CRITERIA} = require("../utils/consts");
+const {SORT_CRITERIA} = require("../utils/consts")
 const {Op} = require("sequelize")
+const shoeService = require('../service/shoesService')
 
 class ShoesController {
     async create(req, res, next) {
@@ -41,7 +42,7 @@ class ShoesController {
         let offset = page * limit - limit
         let devices
         if (!order || order.trim().length === 0) {
-            order = SORT_CRITERIA[0]
+            order = 'createdAt asc'
         }
         const orderSplit = order.split(' ')
         order = [orderSplit[0], orderSplit[1]]
@@ -71,32 +72,73 @@ class ShoesController {
         return res.json(devices);
     }
 
-    async getOne(req, res) {
-        const {id} = req.params
-        const device = await Shoes.findOne({
-            where: {id},
-            include: [
-                {model: ShoesInfo, as: 'info'},
-                {model: ShoesSizes, as: 'sizes'},
-                {model: Brand, as: 'brand'},
-                {model: Type, as: 'type'}
-            ],
-            order: [[{model: ShoesSizes, as: 'sizes'}, 'sizeValue', 'asc']]
-        })
-
-        return res.json(device)
+    async getOne(req, res, next) {
+        try {
+            const {id} = req.params
+            const shoes = await shoeService.getOne(id)
+            return res.json(shoes)
+        } catch (e) {
+            return next(ApiError.internal(e.message))
+        }
     }
 
     async getSortCriteria(req, res) {
         return res.json(SORT_CRITERIA)
     }
 
+    async update(req, res, next) {
+        try {
+            const {id} = req.params
+            let {name, brandId, typeId, price, sizes, info} = req.body
+            info = JSON.parse(info)
+
+            if (req.files) {
+                const {img} = req.files
+                let fileName = uuid.v4() + ".jpg"
+                img.mv(path.resolve(__dirname, '..', 'static', fileName))
+                await shoesToBeUpdated.update({img: {fileName}})
+            }
+
+
+            const shoesToBeUpdated = await Shoes.findOne({where: {id}})
+            await shoesToBeUpdated.update({name, brandId, typeId, price})
+
+            let currentShoesInfo = await ShoesInfo
+                .findAll({where: {shoId: id}})
+
+            for (const infoId of currentShoesInfo.map(item => item.id)) {
+                if (!info.map(item => item.id).includes(infoId)) {
+                    await ShoesInfo.destroy({where: {id: infoId}})
+                } else {
+                    info = info.filter(item => item.id !== infoId)
+                }
+            }
+            if (info.length !== 0) {
+                for (const item of info) {
+                    await ShoesInfo.create({
+                        title: item.title,
+                        description: item.description,
+                        shoId: id
+                    })
+                }
+            }
+            await shoesToBeUpdated.save()
+
+            return res.json(shoeService.getOne(id))
+        } catch (e) {
+            console.log(e)
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+
     async delete(req, res, next) {
         try {
             const {id} = req.params
-            Shoes.destroy({where: {id}})
+            await Shoes.destroy({where: {id}})
+
         } catch (e) {
-            next(ApiError.badRequest(e.message))
+            console.log(e)
+            return next(ApiError.badRequest(e.message))
         }
         return res.status(200).json({})
     }

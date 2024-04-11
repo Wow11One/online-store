@@ -1,22 +1,17 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Col, Dropdown, Form, Modal, Row} from "react-bootstrap";
 import {Context} from "../../index";
-import {createDevice, fetchBrands, fetchTypes} from "../../http/shoesApi";
+import {createShoes, fetchBrands, fetchShoesList, fetchTypes, updateShoes} from "../../http/shoesApi";
 import {observer} from "mobx-react-lite";
 
-const DeviceModal = observer(({show, onHide}) => {
-    const {shoes} = useContext(Context)
+const ShoesModal = observer(({show, onHide, actionName, context}) => {
+    const {shoes, type, brand} = useContext(Context)
     const [info, setInfo] = useState([])
-    const [name, setName] = useState('')
-    const [price, setPrice] = useState(0)
     const [file, setFile] = useState(null)
-    const [brand, setBrand] = useState(null)
-    const [type, setType] = useState(null)
 
     useEffect(() => {
-        fetchTypes().then(data => shoes.setTypes(data))
-        fetchBrands().then(data => shoes.setBrands(data))
-
+        fetchTypes().then(data => type.setTypes(data.rows))
+        fetchBrands().then(data => brand.setBrands(data.rows))
     }, [])
 
     const addInfo = () => {
@@ -31,15 +26,53 @@ const DeviceModal = observer(({show, onHide}) => {
     const changeInfo = (key, value, number) => {
         setInfo(info.map(i => i.number === number ? {...i, [key]: value} : i))
     }
-    const addDevice = () => {
+    const createFormData = () => {
         const formData = new FormData()
-        formData.append('name', name)
-        formData.append('price', price)
+        formData.append('id', shoes.selected.id)
+        formData.append('name', shoes.selected.name)
+        formData.append('price', shoes.selected.price)
         formData.append('img', file)
-        formData.append('brandId', shoes.selectedBrand.id)
-        formData.append('typeId', shoes.selectedType.id)
+        formData.append('brandId', shoes.selected.brand.id)
+        formData.append('typeId', shoes.selected.type.id)
         formData.append('info', JSON.stringify(info))
-        createDevice(formData).then(data => onHide())
+        return formData
+    }
+    const addShoes = () => {
+        const formData = createFormData()
+        createShoes(formData)
+            .then(data => {
+                fetchShoesList(undefined,
+                    undefined,
+                    shoes.page,
+                    shoes.limit,
+                    shoes.search,
+                    undefined)
+                    .then(data => {
+                        shoes.setShoesList(data.rows)
+                        shoes.setTotalCount(data.count)
+                    })
+                onHide()
+            })
+            .catch(err => alert(err))
+    }
+
+    const changeShoes = () => {
+        const formData = createFormData()
+        updateShoes(formData)
+            .then(data => {
+                fetchShoesList(undefined,
+                    undefined,
+                    shoes.page,
+                    shoes.limit,
+                    shoes.search,
+                    undefined)
+                    .then(data => {
+                        shoes.setShoesList(data.rows)
+                        shoes.setTotalCount(data.count)
+                    })
+                onHide()
+            })
+            .catch(err => alert(err))
     }
 
     return (
@@ -52,19 +85,19 @@ const DeviceModal = observer(({show, onHide}) => {
         >
             <Modal.Header closeButton>
                 <Modal.Title id='contained-modal-title-vcenter'>
-                    Create a new device
+                    {actionName} shoes
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
                     <Dropdown className='mt-3'>
                         <Dropdown.Toggle variant={'secondary'}>
-                            {shoes.selectedType.name || 'Choose type'}
+                            {shoes.selected.type.name || 'Choose type'}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {shoes.types.map(type =>
+                            {type.types.map(type =>
                                 <Dropdown.Item
-                                    onClick={() => shoes.setSelectedType(type)}
+                                    onClick={() => shoes.setSelected({...shoes.selected, type})}
                                     key={type.id}
                                 >
                                     {type.name}
@@ -74,12 +107,12 @@ const DeviceModal = observer(({show, onHide}) => {
                     </Dropdown>
                     <Dropdown className='mt-3'>
                         <Dropdown.Toggle variant={'secondary'}>
-                            {shoes.selectedBrand.name || 'Choose brand'}
+                            {shoes.selected.brand.name || 'Choose brand'}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {shoes.brands.map(brand =>
+                            {brand.brands.map(brand =>
                                 <Dropdown.Item
-                                    onClick={() => shoes.setSelectedBrand(brand)}
+                                    onClick={() => shoes.setSelected({...shoes.selected, brand})}
                                     key={brand.id}
                                 >
                                     {brand.name}
@@ -88,21 +121,21 @@ const DeviceModal = observer(({show, onHide}) => {
                         </Dropdown.Menu>
                     </Dropdown>
                     <Form.Control
-                        value={name}
-                        onChange={e => setName(e.target.value)}
+                        value={shoes.selected.name}
+                        onChange={e => shoes.setSelected({...shoes.selected, name: e.target.value})}
                         className='mt-3'
-                        placeholder='Enter the name of a new device'
+                        placeholder='Enter the name of a new shoes'
                     />
                     <Form.Control
-                        value={price}
-                        onChange={e => setPrice(Number(e.target.value))}
+                        value={shoes.selected.price}
+                        onChange={e => shoes.setSelected({...shoes.selected, price: Number(e.target.value)})}
                         className='mt-3'
-                        placeholder='Enter the price of a new device'
+                        placeholder='Enter the price of a new shoes'
                         type='number'
                     />
                     <Form.Control
                         className='mt-3'
-                        placeholder='Enter the device picture'
+                        placeholder='Enter the shoes picture'
                         type='file'
                         onChange={selectFile}
                     />
@@ -143,10 +176,18 @@ const DeviceModal = observer(({show, onHide}) => {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant='outline-danger' onClick={onHide}>Close</Button>
-                <Button variant='outline-success' onClick={addDevice}>Add</Button>
+                <Button
+                    variant='outline-success'
+                    onClick={actionName === 'Create'
+                        ? addShoes
+                        : changeShoes}
+                    type={'submit'}
+                >
+                    {actionName}
+                </Button>
             </Modal.Footer>
         </Modal>
     )
 })
 
-export default DeviceModal;
+export default ShoesModal;

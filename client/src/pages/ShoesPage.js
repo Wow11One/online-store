@@ -43,7 +43,7 @@ const ShoesPage = observer(() => {
                         <Card
                             className='d-flex align-items-center shadow-sm'
                             style={{
-                                width: 180,
+                                width: 200,
                                 height: 80,
                                 fontSize: 29,
                                 border: 'none'

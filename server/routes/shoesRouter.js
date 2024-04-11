@@ -7,6 +7,7 @@ router.post('/', checkRole('ADMIN'), shoesController.create)
 router.get('/', shoesController.getAll)
 router.get('/sort-criteria', shoesController.getSortCriteria)
 router.get('/:id', shoesController.getOne)
+router.put('/:id', shoesController.update)
 router.delete('/:id', checkRole('ADMIN'), shoesController.delete)
 
 module.exports = router

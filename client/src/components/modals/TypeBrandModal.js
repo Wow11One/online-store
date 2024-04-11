@@ -25,6 +25,7 @@ const TypeBrandModal = observer(({show, onHide, action, actionTarget, actionName
                         onChange={e => context.setSelected({...context.selected, ['name']: e.target.value})}
                         placeholder={'Enter the name'}
                         name={'name'}
+                        required
                     />
                 </Form>
             </Modal.Body>
@@ -40,6 +41,7 @@ const TypeBrandModal = observer(({show, onHide, action, actionTarget, actionName
                 <Button
                     variant='outline-success'
                     onClick={() => action(onHide, context)}
+                    type={'submit'}
                 >
                     {actionName}
                 </Button>

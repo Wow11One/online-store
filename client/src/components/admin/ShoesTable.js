@@ -1,11 +1,30 @@
 import React, {useContext, useState} from 'react';
 import {Button, Row, Table} from "react-bootstrap";
 import TypeBrandModal from "../modals/TypeBrandModal";
+import {Context} from "../../index";
 import Pages from "../Pages";
+import ShoesModal from "../modals/ShoesModal";
+import {deleteShoes, fetchShoesList} from "../../http/shoesApi";
 
-const BrandTypeTable = ({data, updateAction, deleteAction, context}) => {
+const ShoesTable = ({data, context}) => {
     const [modalVisible, setModalVisible] = useState(false)
-    const [value, setValue] = useState({id: -2, name: ''})
+    const remove = (context, id) => {
+        deleteShoes(id).then(data => {
+            if (context.shoesList.length === 1) {
+                context.setPage(context.page - 1)
+            }
+
+            fetchShoesList(undefined,
+                undefined,
+                context.page,
+                context.limit,
+                context.search,
+                undefined).then(data => {
+                context.setShoesList(data.rows)
+                context.setTotalCount(data.count)
+            })
+        })
+    }
     return (
         <Row>
             <Table
@@ -18,6 +37,9 @@ const BrandTypeTable = ({data, updateAction, deleteAction, context}) => {
                 <tr>
                     <th>№</th>
                     <th>Name</th>
+                    <th>Brand</th>
+                    <th>Type</th>
+                    <th>Price</th>
                     <th>Update</th>
                     <th>Delete</th>
                 </tr>
@@ -28,13 +50,24 @@ const BrandTypeTable = ({data, updateAction, deleteAction, context}) => {
                     <tr key={item.id}>
                         <td>{(index + 1) + context.limit * (context.page - 1)}</td>
                         <td>{item.name}</td>
+                        <td>{item.brand.name}</td>
+                        <td>{item.type.name}</td>
+                        <td>{item.price}</td>
                         <td>
                             <Button
                                 type='button'
                                 variant='outline-secondary'
                                 onClick={() => {
-                                    setValue({name: item.name, id: item.id})
-                                    context.setSelected(item)
+                                    context.setSelected({
+                                        id: item.id,
+                                        info: item.info,
+                                        sizes: item.sizes,
+                                        brand: item.brand,
+                                        type: item.type,
+                                        name: item.name,
+                                        price: item.price,
+                                        img: item.img
+                                    })
                                     setModalVisible(true)
                                 }
                                 }
@@ -58,7 +91,7 @@ const BrandTypeTable = ({data, updateAction, deleteAction, context}) => {
                             <Button
                                 type='button'
                                 variant='outline-secondary'
-                                onClick={() => deleteAction(context, item.id)}
+                                onClick={() => remove(context, item.id)}
                             >
                                 <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'
                                      className="bi bi-trash-fill" viewBox="0 0 16 16">
@@ -68,7 +101,6 @@ const BrandTypeTable = ({data, updateAction, deleteAction, context}) => {
                                             1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5
                                             0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5
                                             0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0'>
-
                                     </path>
                                 </svg>
                             </Button>
@@ -76,18 +108,17 @@ const BrandTypeTable = ({data, updateAction, deleteAction, context}) => {
                     </tr>
                 )}
                 </tbody>
-                <TypeBrandModal show={modalVisible}
-                                onHide={() =>
-                                    setModalVisible(false)
-                                }
-                                actionName='Change'
-                                actionTarget={data.target}
-                                action={updateAction}
-                                context={context}
+                <ShoesModal show={modalVisible}
+                            onHide={() =>
+                                setModalVisible(false)
+                            }
+                            actionName='Change'
+                            actionTarget={'shoes'}
+                            context={context}
                 />
             </Table>
             <Pages context={context}/>
         </Row>);
 };
 
-export default BrandTypeTable;
+export default ShoesTable;

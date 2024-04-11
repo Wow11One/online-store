@@ -1,5 +1,12 @@
 const sequelize = require('../db')
 const {DataTypes} = require('sequelize')
+const {
+    ORDER_STATUS_NEW,
+    ORDER_STATUS_IN_PROCESS,
+    ORDER_STATUS_CANCELLED,
+    ORDER_STATUS_COMPLETED, PAYMENT_TYPE_UPON_RECEIPT, PAYMENT_TYPE_ONLINE, DELIVERY_TYPE_NOVA_POST,
+    DELIVERY_TYPE_COURIER
+} = require("../utils/consts");
 
 const User = sequelize.define('user', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
@@ -7,13 +14,49 @@ const User = sequelize.define('user', {
     password: {type: DataTypes.STRING},
     role: {type: DataTypes.STRING, defaultValue: 'USER'}
 })
-
-const Basket = sequelize.define('basket', {
+const Order = sequelize.define('order', {
+        id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+        states: {
+            type: DataTypes.ENUM,
+            values: [
+                ORDER_STATUS_NEW,
+                ORDER_STATUS_IN_PROCESS,
+                ORDER_STATUS_CANCELLED,
+                ORDER_STATUS_COMPLETED
+            ],
+            allowNull: false,
+            defaultValue: ORDER_STATUS_NEW
+        },
+        userName: {type: DataTypes.STRING, allowNull: false, field: 'user_name'},
+        userSurname: {type: DataTypes.STRING, allowNull: false, field: 'user_surname'},
+        comment: {type: DataTypes.STRING, allowNull: false},
+        paymentType: {
+            type: DataTypes.ENUM,
+            values: [
+                PAYMENT_TYPE_UPON_RECEIPT,
+                PAYMENT_TYPE_ONLINE
+            ],
+            allowNull: false,
+            field: 'payment_type'
+        },
+        deliveryType: {
+            type: DataTypes.ENUM,
+            values: [
+                DELIVERY_TYPE_NOVA_POST,
+                DELIVERY_TYPE_COURIER
+            ],
+            allowNull: false,
+            field: 'delivery_type'
+        },
+        address: {type: DataTypes.STRING},
+        postRegion: {type: DataTypes.STRING, field: 'post_region'},
+        postCity: {type: DataTypes.STRING, field: 'post_city'},
+        postDepartment: {type: DataTypes.STRING, field: 'post_department'}
+    }
+)
+const OrderShoesSizes = sequelize.define('order_shoes_sizes', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-})
-
-const BasketShoes = sequelize.define('basket_device', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    amount: {type: DataTypes.INTEGER, allowNull: false, min: 1}
 })
 
 const Shoes = sequelize.define('shoes', {
@@ -22,7 +65,7 @@ const Shoes = sequelize.define('shoes', {
     price: {type: DataTypes.INTEGER, allowNull: false},
     rating: {type: DataTypes.INTEGER, defaultValue: 0},
     img: {type: DataTypes.STRING, allowNull: false}
-})
+});
 
 const ShoesSizes = sequelize.define('shoes_sizes', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
@@ -45,7 +88,7 @@ const Rating = sequelize.define('rating', {
     rate: {type: DataTypes.INTEGER, allowNull: false}
 })
 
-const ShoesInfo = sequelize.define('shoes_info', {
+const ShoesInfo = sequelize.define('shoes_infos', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     title: {type: DataTypes.STRING, allowNull: false},
     description: {type: DataTypes.STRING, allowNull: false}
@@ -58,14 +101,17 @@ const TypeBrand = sequelize.define('type_brand', {
 Shoes.hasMany(ShoesSizes, {as: 'sizes'})
 ShoesSizes.belongsTo(Shoes)
 
-User.hasOne(Basket)
-Basket.belongsTo(User)
-
 User.hasMany(Rating)
 Rating.belongsTo(User)
 
-Basket.hasMany(BasketShoes)
-BasketShoes.belongsTo(Basket)
+User.hasMany(Order)
+Order.belongsTo(User)
+
+Order.hasMany(OrderShoesSizes)
+OrderShoesSizes.belongsTo(Order)
+
+ShoesSizes.hasMany(OrderShoesSizes)
+OrderShoesSizes.belongsTo(ShoesSizes)
 
 Type.hasMany(Shoes, {onDelete: 'CASCADE'})
 Shoes.belongsTo(Type)
@@ -84,13 +130,13 @@ Brand.belongsToMany(Type, {through: TypeBrand})
 
 module.exports = {
     User,
-    Basket,
-    BasketShoes,
     ShoesSizes,
     Shoes,
     Type,
     Brand,
     Rating,
     ShoesInfo,
-    TypeBrand
+    TypeBrand,
+    Order,
+    OrderShoesSizes
 }

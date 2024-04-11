@@ -1,15 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Row} from "react-bootstrap";
 import TypeBrandModal from "../modals/TypeBrandModal";
-import {
-    createBrand,
-    createType,
-    deleteBrand, deleteType,
-    fetchBrands,
-    fetchShoesList,
-    fetchTypes,
-    updateBrand, updateType
-} from "../../http/shoesApi";
+import {createType, deleteType, fetchTypes, updateType} from "../../http/shoesApi";
 import BrandTypeTable from "./BrandTypeTable";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
@@ -50,7 +42,7 @@ const TypeSection = observer(() => {
                         type.setPage(type.page)
                         context.setSelected({name: '', id: ''})
                     })
-            })
+            }).catch(err => alert(err))
 
         onHide()
     }
@@ -63,7 +55,7 @@ const TypeSection = observer(() => {
                 }
                 return item
             }))
-        })
+        }).catch(err => alert(err))
         context.setSelected({id: -2, name: ''})
         context.setSearch('')
         context.setPage(1)
@@ -77,7 +69,7 @@ const TypeSection = observer(() => {
             if (context.types.length === 0) {
                 context.setPage(context.page - 1)
             }
-        })
+        }).catch(err => alert(err))
     }
 
     return (

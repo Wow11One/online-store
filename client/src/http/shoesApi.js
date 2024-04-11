@@ -45,10 +45,11 @@ export const fetchBrands = async (search = '', page = 1, limit) => {
     return data
 }
 
-export const createDevice = async (device) => {
-    const {data} = await $authHost.post('api/shoes', device)
+export const createShoes = async (shoes) => {
+    const {data} = await $authHost.post('api/shoes', shoes)
     return data
 }
+
 
 export const fetchOnePairOfShoes = async (id) => {
     const {data} = await $host.get('api/shoes/' + id)
@@ -61,6 +62,16 @@ export const fetchShoesList = async (typeId, brandId, page, limit = 5, search, o
             typeId, brandId, page, limit, search, order
         }
     })
+    return data
+}
+
+export const updateShoes = async (shoes) => {
+    const {data} = await $authHost.put('api/shoes/' + shoes.get('id'), shoes)
+    return data
+}
+
+export const deleteShoes = async (id) => {
+    const {data} = await $authHost.delete('api/shoes/' + id)
     return data
 }
 
