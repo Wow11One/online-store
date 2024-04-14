@@ -18,12 +18,10 @@ class NovaPostApiService {
             calledMethod: 'getAreas',
         }
         const data = await fetchData(parameters)
-        const res = data.map(region => {
+        const res = data.filter(region => region.Description !== 'АРК').map(region => {
             return {
                 id: region.Ref,
-                name: region.Description === 'АРК'
-                    ? region.Description
-                    : region.Description + ' область'
+                name: region.Description + ' область'
             }
         })
 

@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {Context} from "../index";
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
-import {ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE} from "../utils/consts";
+import {ADMIN_ROUTE, LOGIN_ROUTE, ORDER_PAGE_ROUTE, SHOP_ROUTE} from "../utils/consts";
 import {observer} from "mobx-react-lite";
 import {useNavigate} from "react-router-dom";
 
@@ -18,17 +18,25 @@ const NavBar = observer(() => {
             <Container>
                 <Navbar.Brand href={SHOP_ROUTE}>Shoes.com</Navbar.Brand>
                 {user.isAuth ?
-                    <Nav className='ml-auto align-items-center' >
+                    <Nav className='ml-auto align-items-center'>
+                        <Button
+                            variant='outline-secondary'
+                            onClick={() => navigate(ORDER_PAGE_ROUTE)}
+                            className='me-3'
+                        >
+                            Basket
+                        </Button>
                         <Button
                             variant='outline-secondary'
                             onClick={() => navigate(ADMIN_ROUTE)}
+                            className='me-3'
                         >
                             Admin
                         </Button>
                         <Button
                             variant='outline-secondary'
                             onClick={() => logOut()}
-                            className='ms-3'
+                            className='me-3'
                         >
                             Log Out
                         </Button>

@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {ORDER_PRICE_ASC} from "../utils/consts";
+import {SORT_PRICE_ASC} from "../utils/consts";
 import {Dropdown} from "react-bootstrap";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
@@ -15,7 +15,7 @@ const OrderBar = observer(() => {
     return (
         <Dropdown title='Sort by'>
             <Dropdown.Toggle variant='outline-secondary'>
-                {shoes.selectedSortCriterion === ORDER_PRICE_ASC
+                {shoes.selectedSortCriterion === SORT_PRICE_ASC
                     ? 'From cheap to expensive'
                     : 'From expensive to cheap'}
             </Dropdown.Toggle>
@@ -29,7 +29,7 @@ const OrderBar = observer(() => {
                         onClick={() => sort(order)}
                         key={order}
                     >
-                        {order === ORDER_PRICE_ASC
+                        {order === SORT_PRICE_ASC
                             ? 'From cheap to expensive'
                             : 'From expensive to cheap'}
                     </Dropdown.Item>

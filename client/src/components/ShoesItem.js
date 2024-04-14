@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card, Col, Image} from "react-bootstrap";
 import {useNavigate} from 'react-router-dom'
-import {DEVICE_ROUTE, SERVER_URL} from "../utils/consts";
+import {SHOES_ROUTE, SERVER_URL} from "../utils/consts";
 
 const ShoesItem = ({shoes}) => {
     const navigate = useNavigate()
@@ -9,7 +9,7 @@ const ShoesItem = ({shoes}) => {
         <Col
             style={{width: '30%'}}
             md={4}
-            onClick={() => navigate(DEVICE_ROUTE + '/' + shoes.id)}
+            onClick={() => navigate(SHOES_ROUTE + '/' + shoes.id)}
         >
             <Card
                 className='mt-3 rounded-0'

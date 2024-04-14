@@ -25,7 +25,7 @@ const Shop = observer(() => {
 
         fetchShoesList(undefined,
             undefined,
-            1,
+            shoes.page,
             shoes.limit,
             '',
             shoes.selectedSortCriterion).then(data => {

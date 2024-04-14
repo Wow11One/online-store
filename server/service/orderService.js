@@ -12,6 +12,7 @@ class OrderService {
                      basket
                  }) {
         try {
+            address = JSON.parse(address)
             const order = await Order.create({
                 userId,
                 userName,
@@ -21,10 +22,10 @@ class OrderService {
                 paymentType,
                 ...address
             })
-
+            basket = JSON.parse(basket)
             basket.forEach(item => {
                 OrderShoesSizes.create({
-                    shoesSizeId: item.id,
+                    shoesSizeId: item.shoesId,
                     orderId: order.id,
                     amount: item.amount
                 })

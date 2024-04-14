@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom'
 import {Button, Card, Col, Container, Image, Row} from "react-bootstrap"
-import bigStar from '../assets/bigStar.png'
 import {fetchOnePairOfShoes} from "../http/shoesApi";
 import {SERVER_URL} from "../utils/consts";
 import SizeList from "../components/SizeList";
@@ -11,13 +10,34 @@ import {Context} from "../index";
 
 
 const ShoesPage = observer(() => {
-    const {shoes} = useContext(Context)
+    const {shoes, order} = useContext(Context)
     const [currShoes, setCurrShoes] = useState({info: [], brand: {}, type: {}, sizes: []})
     const {id} = useParams()
+    const addToBag = () => {
+        let basket = JSON.parse(localStorage.getItem('basket'))
+        const index = basket.findIndex(e => e.shoesId === currShoes.id && e.size === shoes.selectedSize)
+
+        if (index > -1) {
+            basket[index].amount++
+        } else {
+            basket.push({
+                id: Date.now(),
+                shoesId: currShoes.id,
+                amount: 1,
+                name: currShoes.name,
+                price: currShoes.price,
+                img: currShoes.img,
+                size: shoes.selectedSize
+            })
+        }
+        console.log(basket)
+        localStorage.setItem('basket', JSON.stringify(basket))
+        order.setBasket(basket)
+        alert('Shoes successfully added to basket')
+    }
     useEffect(() => {
         fetchOnePairOfShoes(id).then(data => setCurrShoes(data))
     }, [])
-    console.log(currShoes)
     return (
         <Container className='mt-4'>
             <Row>
@@ -66,6 +86,7 @@ const ShoesPage = observer(() => {
                         style={{minWidth: 150, minHeight: 40, fontSize: 18}}
                         className='mt-5'
                         disabled={currShoes.sizes.length === 0 || shoes.selectedSize === 0}
+                        onClick={addToBag}
                     >
                         Add to Bag
                     </Button>
