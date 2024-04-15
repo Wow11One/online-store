@@ -3,16 +3,11 @@ import {Context} from "../../index";
 import OrderHeader from "./OrderHeader";
 import {Dropdown, Form, Row} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
-import {fetchRegions} from "../../http/shoesApi";
 import RegionDropdown from "./RegionDropdown";
 import CityDropdown from "./CityDropdown";
 import DepartmentDropdown from "./DepartmentDropdown";
 
 const OrderDeliveryNovaPostAddress = observer(() => {
-    const {order} = useContext(Context)
-    const [regions, setRegions] = useState([])
-    const [regionSearch, setRegionSearch] = useState('')
-
 
     return (
         <div className='mt-3'>

@@ -7,4 +7,8 @@ router.get('/regions', novaPostApiController.getRegions)
 router.get('/cities', novaPostApiController.getCitiesByRegion)
 router.get('/departments', novaPostApiController.getDepartmentsByCity)
 
+router.get('/regions/:id', novaPostApiController.getRegionById)
+router.get('/cities/:id', novaPostApiController.getCityById)
+router.get('/departments/:id', novaPostApiController.getDepartmentById)
+
 module.exports = router

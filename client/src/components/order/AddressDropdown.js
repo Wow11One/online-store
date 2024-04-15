@@ -13,13 +13,14 @@ const AddressDropdown = observer(({field, data}) => {
         }
         return arr.filter(item => item.name.toLowerCase().includes(search))
     }
+
     return (
         <Dropdown className='mt-3' drop='end'>
             <Dropdown.Toggle
                 style={{width: 350}}
                 variant={'secondary'}
             >
-                {order.postAddress[field].name || 'Choose' + field}
+                {order.postAddress[field]?.name || 'Choose ' + field}
             </Dropdown.Toggle>
             <Dropdown.Menu style={{width: 400}}>
                 <input

@@ -27,6 +27,33 @@ class NovaPostApiController {
             return next(ApiError.badRequest(e.message))
         }
     }
+
+    async getRegionById(req, res, next) {
+        try {
+            const {id} = req.params
+            return res.json(await novaPostApiService.getRegionById(id))
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+
+    async getCityById(req, res, next) {
+        try {
+            const {id} = req.params
+            return res.json(await novaPostApiService.getCityById(id))
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+
+    async getDepartmentById(req, res, next) {
+        try {
+            const {id} = req.params
+            return res.json(await novaPostApiService.getDepartmentById(id))
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
 }
 
 module.exports = new NovaPostApiController()

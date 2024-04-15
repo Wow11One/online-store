@@ -14,7 +14,7 @@ const ShoesSection = observer(() => {
     useEffect(() => {
         fetchShoesList(undefined,
             undefined,
-            1,
+            shoes.page,
             shoes.limit,
             '',
             shoes.selectedSortCriterion).then(data => {

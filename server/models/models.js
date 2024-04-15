@@ -16,7 +16,7 @@ const User = sequelize.define('user', {
 })
 const Order = sequelize.define('order', {
         id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-        states: {
+        state: {
             type: DataTypes.ENUM,
             values: [
                 ORDER_STATUS_NEW,

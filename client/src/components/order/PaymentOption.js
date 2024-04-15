@@ -17,7 +17,7 @@ const PaymentOption = observer(() => {
                         type={'radio'}
                         label={'Pay online'}
                         name='payment_group'
-                        defaultChecked={true}
+                        checked={PAYMENT_TYPE_ONLINE === order.paymentType}
                         onClick={() => order.setPaymentType(PAYMENT_TYPE_ONLINE)}
                     />
 
@@ -26,6 +26,7 @@ const PaymentOption = observer(() => {
                         label={'Pay upon receipt'}
                         className='mt-1'
                         name='payment_group'
+                        checked={PAYMENT_TYPE_UPON_RECEIPT === order.paymentType}
                         onClick={() => order.setPaymentType(PAYMENT_TYPE_UPON_RECEIPT)}
                     />
                 </div>

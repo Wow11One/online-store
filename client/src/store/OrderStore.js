@@ -1,28 +1,22 @@
 import {makeAutoObservable} from "mobx";
-import {DELIVERY_TYPE_NOVA_POST, PAYMENT_TYPE_UPON_RECEIPT} from "../utils/consts";
-import basket from "../components/order/Basket";
+import {DELIVERY_TYPE_NOVA_POST, ORDER_PAGE_TYPE_CREATE, PAYMENT_TYPE_UPON_RECEIPT} from "../utils/consts";
 
 export default class OrderStore {
     constructor() {
         this._orders = []
         this._page = 1
         this._totalCount = 0
-        this._limit = 2
+        this._limit = 10
         this._search = ''
-        this._firstName = ''
-        this._surname = ''
+        this._basket = JSON.parse(localStorage.getItem('basket'))
+        this.reset()
         this._email = ''
-        this._comment = ''
-        this._paymentType = PAYMENT_TYPE_UPON_RECEIPT
-        this._deliveryType = DELIVERY_TYPE_NOVA_POST
+        this._state = ''
         this._postAddress = {
             postDepartment: {id: '', name: ''},
             postCity: {id: '', name: ''},
             postRegion: {id: '', name: ''}
         }
-        this._courierAddress = ''
-        this._basket = JSON.parse(localStorage.getItem('basket'))
-        this._pageType = 'create'
         makeAutoObservable(this)
     }
 
@@ -94,6 +88,15 @@ export default class OrderStore {
         return this._pageType;
     }
 
+
+    get state() {
+        return this._state;
+    }
+
+    setState(value) {
+        this._state = value;
+    }
+
     setPageType(value) {
         this._pageType = value;
     }
@@ -154,5 +157,14 @@ export default class OrderStore {
         this._basket = value
     }
 
-
+    reset() {
+        this._firstName = ''
+        this._surname = ''
+        this._comment = ''
+        this._state = ''
+        this._paymentType = PAYMENT_TYPE_UPON_RECEIPT
+        this._deliveryType = DELIVERY_TYPE_NOVA_POST
+        this._courierAddress = ''
+        this._pageType = ORDER_PAGE_TYPE_CREATE
+    }
 }

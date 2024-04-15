@@ -22,9 +22,9 @@ const SizeList = observer(({sizeList}) => {
                         style={{height: 'auto', width: 'auto'}}
                         variant='outline-dark'
                         className='m-1'
-                        active={shoes.selectedSize === size.sizeValue}
-                        onClick={() => shoes.setSelectedSize(size.sizeValue)}
-                        key={Number(size.sizeValue)}
+                        active={shoes.selectedSize.id === size.id}
+                        onClick={() => shoes.setSelectedSize(size)}
+                        key={Number(size.id)}
                     >
                         {size.sizeValue}
                     </Button>)}

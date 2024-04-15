@@ -23,7 +23,7 @@ const OrderDeliveryOption = observer(() => {
                         type={'radio'}
                         label={'Delivery by NOVA post'}
                         name='delivery_group'
-                        defaultChecked={true}
+                        checked={DELIVERY_TYPE_NOVA_POST === order.deliveryType}
                         onClick={() => order.setDeliveryType(DELIVERY_TYPE_NOVA_POST)}
                     />
 
@@ -32,6 +32,7 @@ const OrderDeliveryOption = observer(() => {
                         label={'Delivery by courier'}
                         className='mt-1'
                         name='delivery_group'
+                        checked={DELIVERY_TYPE_COURIER === order.deliveryType}
                         onClick={() => order.setDeliveryType(DELIVERY_TYPE_COURIER)}
                     />
                 </div>

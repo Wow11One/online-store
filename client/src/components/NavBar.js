@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {Context} from "../index";
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
-import {ADMIN_ROUTE, LOGIN_ROUTE, ORDER_PAGE_ROUTE, SHOP_ROUTE} from "../utils/consts";
+import {ADMIN_ROUTE, LOGIN_ROUTE, ORDER_PAGE_ROUTE, ORDER_PAGE_TYPE_CREATE, SHOP_ROUTE} from "../utils/consts";
 import {observer} from "mobx-react-lite";
 import {useNavigate} from "react-router-dom";
 
@@ -21,14 +21,14 @@ const NavBar = observer(() => {
                     <Nav className='ml-auto align-items-center'>
                         <Button
                             variant='outline-secondary'
-                            onClick={() => navigate(ORDER_PAGE_ROUTE)}
+                            onClick={() => navigate(ORDER_PAGE_ROUTE, {state: {type: ORDER_PAGE_TYPE_CREATE}})}
                             className='me-3'
                         >
                             Basket
                         </Button>
                         <Button
                             variant='outline-secondary'
-                            onClick={() => navigate(ADMIN_ROUTE)}
+                            onClick={() => navigate(ADMIN_ROUTE + '/brands')}
                             className='me-3'
                         >
                             Admin

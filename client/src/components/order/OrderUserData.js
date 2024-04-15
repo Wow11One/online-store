@@ -23,7 +23,7 @@ const OrderUserDataForm = observer(() => {
                         <Form.Control
                             required
                             disabled
-                            value={user.user.email}
+                            value={order.email}
                             style={{width: 350}}
                         />
                         <Form.Control.Feedback type={'invalid'}>

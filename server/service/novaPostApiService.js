@@ -33,8 +33,8 @@ class NovaPostApiService {
             throw new Error('region cant be null')
         }
         const parameters = {
-            modelName: "Address",
-            calledMethod: "getCities",
+            modelName: 'Address',
+            calledMethod: 'getCities',
             methodProperties: {
                 AreaRef: regionId
             }
@@ -70,6 +70,57 @@ class NovaPostApiService {
         })
 
         return res
+    }
+
+    async getRegionById(id) {
+        const parameters = {
+            modelName: 'Address',
+            calledMethod: 'getAreas',
+            methodProperties: {
+                Ref: id
+            }
+        }
+        const data = await fetchData(parameters)
+
+        if (!data || data.length === 0) {
+            throw new Error('region is not found')
+        }
+
+        return {id: data[0].Ref, name: data[0].Description}
+    }
+
+    async getCityById(id) {
+        const parameters = {
+            modelName: 'Address',
+            calledMethod: 'getCities',
+            methodProperties: {
+                Ref: id
+            }
+        }
+        const data = await fetchData(parameters)
+
+        if (!data || data.length === 0) {
+            throw new Error('city is not found')
+        }
+
+        return {id: data[0].Ref, name: data[0].Description}
+    }
+
+    async getDepartmentById(id) {
+        const parameters = {
+            modelName: 'Address',
+            calledMethod: 'getWarehouses',
+            methodProperties: {
+                Ref: id
+            }
+        }
+        const data = await fetchData(parameters)
+
+        if (!data || data.length === 0) {
+            throw new Error('department is not found')
+        }
+
+        return {id: data[0].Ref, name: data[0].Description}
     }
 }
 

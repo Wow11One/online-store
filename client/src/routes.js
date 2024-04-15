@@ -15,13 +15,22 @@ import OrderPage from "./pages/OrderPage";
 
 export const authRoutes = [
     {
-        path: ADMIN_ROUTE,
+        path: ADMIN_ROUTE + '/:id',
         Component: Admin
     },
     {
         path: ORDER_PAGE_ROUTE,
         Component: OrderPage
+    },
+    {
+        path: ORDER_PAGE_ROUTE + '/:id',
+        Component: OrderPage
+    },
+    {
+        path: ORDER_PAGE_ROUTE + '/:id' + '/update',
+        Component: OrderPage
     }
+
 ]
 
 export const publicRoutes = [

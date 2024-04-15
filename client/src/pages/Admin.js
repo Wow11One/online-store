@@ -6,12 +6,16 @@ import AdminSections from "../components/admin/AdminSections";
 import BrandSection from '../components/admin/BrandSection'
 import TypeSection from "../components/admin/TypeSection";
 import ShoesSection from "../components/admin/ShoesSection";
+import OrderSection from "../components/admin/OrderSection";
+import {useNavigate, useParams} from "react-router-dom";
+import {ADMIN_ROUTE} from "../utils/consts";
 
 const Admin = observer(() => {
-    const adminSections = ['Brands', 'Types', 'Shoes', 'Orders']
-    const [section, setSection] = useState('Brands')
+    const adminSections = ['brands', 'types', 'shoes', 'orders']
+    const {id} = useParams()
+    const navigate = useNavigate()
     const chooseSection = (section) => {
-        setSection(section)
+        navigate(ADMIN_ROUTE + '/' + section)
     }
 
     const renderSection = (section) => {
@@ -22,6 +26,8 @@ const Admin = observer(() => {
                 return <TypeSection/>
             case adminSections[2]:
                 return <ShoesSection/>
+            case adminSections[3]:
+                return <OrderSection/>
         }
     }
 
@@ -34,14 +40,14 @@ const Admin = observer(() => {
                             <AdminSections
                                 adminSection={sec}
                                 onClick={() => chooseSection(sec)}
-                                active={section === sec}
+                                active={id === sec}
                                 key={sec}
                             />
                         )}
                     </ListGroup>
                 </Col>
                 <Col lg={9}>
-                    {renderSection(section)}
+                    {renderSection(id)}
                 </Col>
             </Row>
         </Container>

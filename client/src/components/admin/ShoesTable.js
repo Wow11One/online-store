@@ -118,7 +118,7 @@ const ShoesTable = ({data, context}) => {
                 />
             </Table>
             <Pages context={context}/>
-        </Row>);
-};
+        </Row>)
+}
 
-export default ShoesTable;
+export default ShoesTable

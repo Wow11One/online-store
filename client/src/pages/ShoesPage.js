@@ -15,19 +15,19 @@ const ShoesPage = observer(() => {
     const {id} = useParams()
     const addToBag = () => {
         let basket = JSON.parse(localStorage.getItem('basket'))
-        const index = basket.findIndex(e => e.shoesId === currShoes.id && e.size === shoes.selectedSize)
+        const index = basket.findIndex(e => e.id === shoes.selectedSize.id)
 
         if (index > -1) {
             basket[index].amount++
         } else {
             basket.push({
-                id: Date.now(),
+                id: shoes.selectedSize.id,
                 shoesId: currShoes.id,
                 amount: 1,
                 name: currShoes.name,
                 price: currShoes.price,
                 img: currShoes.img,
-                size: shoes.selectedSize
+                size: shoes.selectedSize.sizeValue
             })
         }
         console.log(basket)

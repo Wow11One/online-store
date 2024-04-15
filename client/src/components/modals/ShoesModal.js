@@ -90,55 +90,105 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Dropdown className='mt-3'>
-                        <Dropdown.Toggle variant={'secondary'}>
-                            {shoes.selected.type.name || 'Choose type'}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {type.types.map(type =>
-                                <Dropdown.Item
-                                    onClick={() => shoes.setSelected({...shoes.selected, type})}
-                                    key={type.id}
-                                >
-                                    {type.name}
-                                </Dropdown.Item>
-                            )}
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Dropdown className='mt-3'>
-                        <Dropdown.Toggle variant={'secondary'}>
-                            {shoes.selected.brand.name || 'Choose brand'}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {brand.brands.map(brand =>
-                                <Dropdown.Item
-                                    onClick={() => shoes.setSelected({...shoes.selected, brand})}
-                                    key={brand.id}
-                                >
-                                    {brand.name}
-                                </Dropdown.Item>
-                            )}
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Form.Control
-                        value={shoes.selected.name}
-                        onChange={e => shoes.setSelected({...shoes.selected, name: e.target.value})}
-                        className='mt-3'
-                        placeholder='Enter the name of a new shoes'
-                    />
-                    <Form.Control
-                        value={shoes.selected.price}
-                        onChange={e => shoes.setSelected({...shoes.selected, price: Number(e.target.value)})}
-                        className='mt-3'
-                        placeholder='Enter the price of a new shoes'
-                        type='number'
-                    />
-                    <Form.Control
-                        className='mt-3'
-                        placeholder='Enter the shoes picture'
-                        type='file'
-                        onChange={selectFile}
-                    />
+                    <Form.Group
+                        className='mt-2 d-flex flex-row justify-content-between align-items-center'
+                        controlId='validationCustom01'
+                    >
+                        <div>
+                            <Form.Label>
+                                Type
+                            </Form.Label>
+                        </div>
+                        <div>
+                            <Dropdown className='mt-3'>
+                                <Dropdown.Toggle variant={'secondary'}>
+                                    {shoes.selected.type.name || 'Choose type'}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {type.types.map(type =>
+                                        <Dropdown.Item
+                                            onClick={() => shoes.setSelected({...shoes.selected, type})}
+                                            key={type.id}
+                                        >
+                                            {type.name}
+                                        </Dropdown.Item>
+                                    )}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
+                    </Form.Group>
+                    <Form.Group
+                        className='mt-2 d-flex flex-row justify-content-between align-items-center'
+                        controlId='validationCustom01'
+                    >
+                        <div>
+                            <Form.Label>
+                                Brand
+                            </Form.Label>
+                        </div>
+                        <Dropdown className='mt-3'>
+                            <Dropdown.Toggle variant={'secondary'}>
+                                {shoes.selected.brand.name || 'Choose brand'}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                {brand.brands.map(brand =>
+                                    <Dropdown.Item
+                                        onClick={() => shoes.setSelected({...shoes.selected, brand})}
+                                        key={brand.id}
+                                    >
+                                        {brand.name}
+                                    </Dropdown.Item>
+                                )}
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Form.Group>
+                    <Form.Group
+                        className='mt-3 d-flex flex-row justify-content-between align-items-center'
+                        controlId='validationCustom01'
+                    >
+                        <div>
+                            <Form.Label>
+                                Name
+                            </Form.Label>
+                        </div>
+                        <Form.Control
+                            value={shoes.selected.name}
+                            onChange={e => shoes.setSelected({...shoes.selected, name: e.target.value})}
+                            placeholder='Enter the name of a new shoes'
+                            style={{width: '73%'}}
+                        />
+                    </Form.Group>
+                    <Form.Group
+                        className='mt-3 d-flex flex-row justify-content-between align-items-center'
+                        controlId='validationCustom01'
+                    >
+                        <div>
+                            <Form.Label>
+                                Price
+                            </Form.Label>
+                        </div>
+                        <Form.Control
+                            value={shoes.selected.price}
+                            onChange={e => shoes.setSelected({...shoes.selected, price: Number(e.target.value)})}
+                            placeholder='Enter the price of a new shoes'
+                            style={{width: '73%'}}
+                            type='number'
+                        />
+                    </Form.Group>
+                    <Form.Group className='mt-3'>
+                        <div>
+                            <Form.Label>
+                                Image
+                            </Form.Label>
+                        </div>
+                        <Form.Control
+                            placeholder='Enter the shoes picture'
+                            className='mt-2'
+                            type='file'
+                            onChange={selectFile}
+                            required={actionName === 'Create'}
+                        />
+                    </Form.Group>
                     <hr/>
                     <Button
                         variant='outline-dark'
