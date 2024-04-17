@@ -1,51 +1,31 @@
 const ApiError = require('../error/ApiError')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const {User, Basket} = require('../models/models')
+const userService = require('../service/userService')
 
-const generateJwt = (id, email, role) => {
-    return jwt.sign({id, email, role},
-        process.env.SECRET_KEY,
-        {expiresIn: '24h'})
-}
 
 class UserController {
     async registration(req, res, next) {
-        const {email, password, role} = req.body
-        if (!email || !password) {
-            return next(ApiError.badRequest('not correct email or password'))
+        try {
+            return res.json({token: await userService.registration(req.body)})
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
         }
-        const candidate = await User.findOne({where: {email}})
-        if (candidate) {
-            return next(ApiError.badRequest('user with such email already exists'))
-        }
-        const hashPassword = await bcrypt.hash(password, 5)
-        const user = await User.create({email, role, password: hashPassword})
-        const basket = await Basket.create({userId: user.id})
-        const token = generateJwt(user.id, user.email, user.role)
-
-        return res.json({token})
     }
 
     async login(req, res, next) {
-        const {password, email} = req.body
-        const user = await User.findOne({where: {email}})
-        if (!user) {
-            return next(ApiError.forbidden('email or password is not found'))
+        try {
+            return res.json({token: await userService.login(req.body)})
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
         }
-
-        let comparePassword = bcrypt.compareSync(password, user.password)
-        if (!comparePassword) {
-            return next(ApiError.internal('password is not correct'))
-        }
-        const token = generateJwt(user.id, user.email, user.role)
-
-        return res.json({token})
     }
 
     async check(req, res, next) {
-        const token = generateJwt(req.user.id, req.user.email, req.user.role)
-        return res.json({token})
+        try {
+            return res.json({token: await userService.check(req.user)})
+        } catch (e) {
+            console.log(e.message)
+            return next(ApiError.badRequest(e.message))
+        }
     }
 }
 

@@ -5,7 +5,7 @@ export default class BrandStore {
         this._brands = []
         this._page = 1
         this._totalCount = 0
-        this._limit = 2
+        this._limit = 5
         this._search = ''
         this._selected = {name: '', id: -1}
         makeAutoObservable(this)

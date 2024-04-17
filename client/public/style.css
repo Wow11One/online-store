@@ -99,3 +99,15 @@ td {
 th {
     background-color: inherit !important;
 }
+
+.highlightOption {
+    background: #6c757d !important;
+}
+
+.option:hover {
+    background: #646970 !important;
+}
+
+.chip {
+    background: #6c757d !important;
+}

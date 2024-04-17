@@ -27,7 +27,7 @@ const CityDropdown = observer(() => {
                 setCities(data)
                 if (order.pageType === ORDER_PAGE_TYPE_CREATE) {
                     let city = data[0]
-                    order.setPostAddress({...order.postAddress, postCity: city})
+                    order.setPostAddress({...order.postAddress, postCity: city, postDepartment: {name: ''}})
                 }
             })
         }

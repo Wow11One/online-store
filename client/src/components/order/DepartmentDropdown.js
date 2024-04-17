@@ -25,11 +25,9 @@ const DepartmentDropdown = observer(() => {
         if (order.postAddress.postCity.id) {
             fetchDepartments(order.postAddress.postCity.id).then(data => {
                 setDepartments(data)
-                let department = data[0]
-                order.setPostAddress({...order.postAddress, postDepartment: department})
             })
         }
-    }, [order.postAddress.postCity, order.postAddress.postRegion])
+    }, [order.postAddress.postCity])
 
     return (
         <AddressDropdown field={'postDepartment'} data={departments}/>

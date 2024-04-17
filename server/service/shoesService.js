@@ -2,7 +2,7 @@ const {Shoes, ShoesInfo, ShoesSizes, Brand, Type} = require("../models/models")
 
 class ShoesService {
     async getOne(id) {
-        const shoes = Shoes.findOne({
+        const shoes = await Shoes.findOne({
             where: {id},
             include: [
                 {model: ShoesInfo, as: 'info'},
@@ -12,6 +12,10 @@ class ShoesService {
             ],
             order: [[{model: ShoesSizes, as: 'sizes'}, 'sizeValue', 'asc']]
         })
+        console.log(shoes)
+        if (!shoes) {
+            throw new Error('no such shoes')
+        }
 
         return shoes
     }

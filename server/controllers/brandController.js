@@ -1,51 +1,44 @@
-const {Brand, Device, Shoes, Type} = require("../models/models");
 const ApiError = require('../error/ApiError')
-const {Op} = require("sequelize");
+const brandService = require('../service/brandService')
 
 class BrandController {
-    async create(req, res) {
-        const {name} = req.body
-        const brand = await Brand.create({name})
-        return res.json(brand)
+    async create(req, res, next) {
+        try {
+            const {name} = req.body
+            const brand = await brandService.create(name)
+            return res.json(brand)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
     }
 
-    async getAll(req, res) {
-        let {page, limit, search} = req.query
-        const queryParameters = {}
-        let additionalParameters = {}
-        if (limit) {
-            page = page || 1
-            let offset = page * limit - limit
-            additionalParameters = {offset, limit}
+    async getAll(req, res, next) {
+        try {
+            const brands = await brandService.getAll(req.query)
+            return res.json(brands)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
         }
-        if (search && search.trim().length !== 0) {
-            queryParameters.name = {[Op.iLike]: '%' + search.trim() + '%'}
-        }
-        additionalParameters.order = [['createdAt', 'asc']]
-        const brands = await Brand.findAndCountAll({
-            where: queryParameters,
-            ...additionalParameters
-        })
-
-        return res.json(brands)
     }
 
-    async update(req, res) {
-        const {id} = req.params
-        const {name} = req.body
-        const brandToBeUpdated = await Brand.findOne({where: {id}})
-        await brandToBeUpdated.update({name})
-        await brandToBeUpdated.save()
-
-        return res.json(brandToBeUpdated)
+    async update(req, res, next) {
+        try {
+            const {id} = req.params
+            const {name} = req.body
+            const result = await brandService.update(id, name)
+            return res.json(result)
+        } catch (e) {
+            console.log(e)
+            return next(ApiError.badRequest(e.message))
+        }
     }
 
     async delete(req, res, next) {
         try {
             const {id} = req.params
-            Brand.destroy({where: {id}})
+            await brandService.delete(id)
         } catch (e) {
-            next(ApiError.badRequest(e.message))
+            return next(ApiError.badRequest(e.message))
         }
         return res.status(200).json({})
     }

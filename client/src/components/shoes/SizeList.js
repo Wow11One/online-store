@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {Button, Row} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
-import {Context} from "../index";
+import {Context} from "../../index";
 
 const SizeList = observer(({sizeList}) => {
     const {shoes} = useContext(Context)

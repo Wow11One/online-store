@@ -25,6 +25,7 @@ import {useLocation, useParams} from "react-router-dom";
 import {check} from "../http/userApi";
 import data from "bootstrap/js/src/dom/data";
 import OrderStateFilter from "../components/admin/OrderStateFilter";
+import OrderHeader from "../components/order/OrderHeader";
 
 const OrderPage = observer(() => {
     const {order, user} = useContext(Context)
@@ -143,11 +144,15 @@ const OrderPage = observer(() => {
                         <Col md={6} className='m-3'>
                             <PaymentOption/>
                             <Basket/>
-                            <div style={{
-                                visibility: order.pageType === ORDER_PAGE_TYPE_UPDATE
-                                    ? 'visible'
-                                    : 'hidden'
-                            }}>
+                            <div
+                                className='mt-3'
+                                style={{
+                                    visibility: order.pageType === ORDER_PAGE_TYPE_UPDATE
+                                        ? 'visible'
+                                        : 'hidden'
+                                }}
+                            >
+                                <div className='mb-3'><OrderHeader text={'Type'}/></div>
                                 <OrderStateFilter hasAny={false}/>
                             </div>
                         </Col>

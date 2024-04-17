@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Row} from "react-bootstrap";
-import SearchBar from "../SearchBar";
+import SearchBar from "../shared/SearchBar";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
 import {createShoes, deleteShoes, fetchShoesList, updateShoes} from "../../http/shoesApi";

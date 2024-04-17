@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import {Button, Row, Table} from "react-bootstrap";
 import TypeBrandModal from "../modals/TypeBrandModal";
 import {Context} from "../../index";
-import Pages from "../Pages";
+import Pages from "../shared/Pages";
 import ShoesModal from "../modals/ShoesModal";
 import {deleteShoes, fetchShoesList} from "../../http/shoesApi";
 

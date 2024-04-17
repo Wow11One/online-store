@@ -5,7 +5,7 @@ import {createBrand, deleteBrand, fetchBrands, fetchShoesList, updateBrand} from
 import BrandTypeTable from "./BrandTypeTable";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
-import SearchBar from "../SearchBar";
+import SearchBar from "../shared/SearchBar";
 
 const BrandSection = observer(() => {
     const [modalVisible, setModalVisible] = useState(false)
@@ -13,7 +13,7 @@ const BrandSection = observer(() => {
 
 
     useEffect(() => {
-        fetchBrands(brand.search, 1, brand.limit).then(data => {
+        fetchBrands(brand.search, brand.page, brand.limit).then(data => {
             brand.setBrands(data.rows)
             brand.setTotalCount(data.count)
         })

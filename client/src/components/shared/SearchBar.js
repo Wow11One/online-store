@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {Button, Form, InputGroup} from "react-bootstrap";
-import {Context} from "../index";
+import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
 
 const SearchBar = observer(({context}) => {

@@ -1,14 +1,14 @@
 import React, {useContext, useEffect} from 'react';
 import {Col, Container, Row} from "react-bootstrap";
-import TypeBar from "../components/TypeBar";
-import BrandBar from "../components/BrandBar";
-import ShoesList from "../components/ShoesList";
+import TypeBar from "../components/shoes/TypeBar";
+import BrandBar from "../components/shoes/BrandBar";
+import ShoesList from "../components/shoes/ShoesList";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {fetchBrands, fetchShoesList, fetchSortCriteria, fetchTypes} from "../http/shoesApi";
-import Pages from "../components/Pages";
-import SearchBar from "../components/SearchBar";
-import OrderBar from "../components/OrderBar";
+import Pages from "../components/shared/Pages";
+import SearchBar from "../components/shared/SearchBar";
+import OrderBar from "../components/shoes/OrderBar";
 
 const Shop = observer(() => {
     const {shoes, brand, type} = useContext(Context)

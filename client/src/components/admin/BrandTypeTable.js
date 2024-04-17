@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {Button, Row, Table} from "react-bootstrap";
 import TypeBrandModal from "../modals/TypeBrandModal";
-import Pages from "../Pages";
+import Pages from "../shared/Pages";
 
 const BrandTypeTable = ({data, updateAction, deleteAction, context}) => {
     const [modalVisible, setModalVisible] = useState(false)

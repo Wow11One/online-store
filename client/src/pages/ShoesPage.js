@@ -1,19 +1,24 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import {Button, Card, Col, Container, Image, Row} from "react-bootstrap"
 import {fetchOnePairOfShoes} from "../http/shoesApi";
-import {SERVER_URL} from "../utils/consts";
-import SizeList from "../components/SizeList";
-import ShoesInfo from "../components/ShoesInfo";
+import {ERROR_ROUTE, LOGIN_ROUTE, SERVER_URL} from "../utils/consts";
+import SizeList from "../components/shoes/SizeList";
+import ShoesInfo from "../components/shoes/ShoesInfo";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 
 
 const ShoesPage = observer(() => {
-    const {shoes, order} = useContext(Context)
+    const {shoes, order, user} = useContext(Context)
     const [currShoes, setCurrShoes] = useState({info: [], brand: {}, type: {}, sizes: []})
     const {id} = useParams()
+    const navigate = useNavigate()
     const addToBag = () => {
+        if (!user.isAuth) {
+            navigate(LOGIN_ROUTE)
+            return
+        }
         let basket = JSON.parse(localStorage.getItem('basket'))
         const index = basket.findIndex(e => e.id === shoes.selectedSize.id)
 
@@ -36,7 +41,9 @@ const ShoesPage = observer(() => {
         alert('Shoes successfully added to basket')
     }
     useEffect(() => {
-        fetchOnePairOfShoes(id).then(data => setCurrShoes(data))
+        fetchOnePairOfShoes(id)
+            .then(data => setCurrShoes(data))
+            .catch(err => navigate(ERROR_ROUTE, {state: {message: err.message}}))
     }, [])
     return (
         <Container className='mt-4'>

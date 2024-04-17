@@ -29,6 +29,7 @@ const Auth = observer(() => {
 
             navigate(SHOP_ROUTE)
         } catch (e) {
+            console.log(e)
             alert(e.response.data.message)
         }
     }

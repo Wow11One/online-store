@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import SearchBar from '../SearchBar'
+import SearchBar from '../shared/SearchBar'
 import {observer} from 'mobx-react-lite'
 import {Context} from "../../index";
 import OrderTable from "./OrderTable";

@@ -6,11 +6,32 @@ const {SORT_CRITERIA} = require("../utils/consts")
 const {Op} = require("sequelize")
 const shoeService = require('../service/shoesService')
 
+
+const createInfo = (info, shoesId) => {
+    info = JSON.parse(info)
+    info.forEach(i =>
+        ShoesInfo.create({
+            title: i.title,
+            description: i.description,
+            shoId: shoesId
+        })
+    )
+}
+
+const createSizes = (sizes, shoesId) => {
+    sizes.forEach(i =>
+        ShoesSizes.create({
+            sizeValue: i,
+            shoId: shoesId
+        })
+    )
+}
+
 class ShoesController {
     async create(req, res, next) {
         try {
             console.log(req.body)
-            let {name, price, brandId, typeId, info} = req.body
+            let {name, price, brandId, typeId, info, sizes} = req.body
             const {img} = req.files
             let fileName = uuid.v4() + ".jpg"
             img.mv(path.resolve(__dirname, '..', 'static', fileName))
@@ -18,19 +39,16 @@ class ShoesController {
             const shoes = await Shoes.create({name, price, brandId, typeId, img: fileName})
 
             if (info) {
-                info = JSON.parse(info)
-                info.forEach(i =>
-                    ShoesInfo.create({
-                        title: i.title,
-                        description: i.description,
-                        deviceId: shoes.id
-                    })
-                )
+                createInfo(info, shoes.id)
+            }
+            if (sizes) {
+                sizes = JSON.parse(sizes)
+                createSizes(sizes, shoes.id)
             }
 
             return res.json(shoes)
         } catch (e) {
-            next(ApiError.badRequest(e))
+            next(ApiError.badRequest(e.message))
         }
     }
 
@@ -40,7 +58,7 @@ class ShoesController {
         page = page || 1
         limit = limit || 9
         let offset = page * limit - limit
-        let devices
+        let shoesList
         if (!order || order.trim().length === 0) {
             order = 'createdAt asc'
         }
@@ -58,7 +76,7 @@ class ShoesController {
             queryParameters.name = {[Op.iLike]: '%' + search.trim() + '%'}
         }
 
-        devices = await Shoes.findAndCountAll({
+        shoesList = await Shoes.findAndCountAll({
             where: queryParameters,
             limit,
             offset,
@@ -69,7 +87,7 @@ class ShoesController {
             ]
         })
 
-        return res.json(devices);
+        return res.json(shoesList);
     }
 
     async getOne(req, res, next) {
@@ -78,7 +96,7 @@ class ShoesController {
             const shoes = await shoeService.getOne(id)
             return res.json(shoes)
         } catch (e) {
-            return next(ApiError.internal(e.message))
+            return next(ApiError.badRequest(e.message))
         }
     }
 
@@ -90,38 +108,44 @@ class ShoesController {
         try {
             const {id} = req.params
             let {name, brandId, typeId, price, sizes, info} = req.body
-            info = JSON.parse(info)
-
+            const shoesToBeUpdated = await Shoes.findOne({where: {id}})
             if (req.files) {
                 const {img} = req.files
                 let fileName = uuid.v4() + ".jpg"
                 img.mv(path.resolve(__dirname, '..', 'static', fileName))
-                await shoesToBeUpdated.update({img: {fileName}})
+                await shoesToBeUpdated.update({img: fileName})
             }
 
 
-            const shoesToBeUpdated = await Shoes.findOne({where: {id}})
+
             await shoesToBeUpdated.update({name, brandId, typeId, price})
 
-            let currentShoesInfo = await ShoesInfo
-                .findAll({where: {shoId: id}})
+            await ShoesInfo.destroy({where: {shoId: id}})
+            if (info) {
+                console.log(info.length)
+                createInfo(info, shoesToBeUpdated.id)
+            }
+            if (sizes) {
+                sizes = JSON.parse(sizes)
+                console.log(sizes.length)
+                const existingSizes = await ShoesSizes.findAll({where: {shoId: id}})
 
-            for (const infoId of currentShoesInfo.map(item => item.id)) {
-                if (!info.map(item => item.id).includes(infoId)) {
-                    await ShoesInfo.destroy({where: {id: infoId}})
-                } else {
-                    info = info.filter(item => item.id !== infoId)
-                }
+                sizes.forEach(size => {
+                    if (!existingSizes.map(item => item.sizeValue).includes(size)) {
+                        ShoesSizes.create({
+                            shoId: id,
+                            sizeValue: size
+                        })
+                    }
+                })
+
+                existingSizes.forEach(existingSize => {
+                    if (!sizes.includes(existingSize.sizeValue)) {
+                        ShoesSizes.destroy({where: {id: existingSize.id}})
+                    }
+                })
             }
-            if (info.length !== 0) {
-                for (const item of info) {
-                    await ShoesInfo.create({
-                        title: item.title,
-                        description: item.description,
-                        shoId: id
-                    })
-                }
-            }
+
             await shoesToBeUpdated.save()
 
             return res.json(shoeService.getOne(id))

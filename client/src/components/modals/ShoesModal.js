@@ -1,18 +1,49 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Button, Col, Dropdown, Form, Modal, Row} from "react-bootstrap";
-import {Context} from "../../index";
-import {createShoes, fetchBrands, fetchShoesList, fetchTypes, updateShoes} from "../../http/shoesApi";
-import {observer} from "mobx-react-lite";
+import React, {useContext, useEffect, useState} from 'react'
+import {Button, Col, Dropdown, Form, Modal, Row} from "react-bootstrap"
+import {Context} from "../../index"
+import {
+    createShoes,
+    fetchBrands,
+    fetchOnePairOfShoes,
+    fetchShoesList,
+    fetchTypes,
+    updateShoes
+} from "../../http/shoesApi"
+import {observer} from "mobx-react-lite"
+import {DELIVERY_TYPE_NOVA_POST, ORDER_PAGE_TYPE_CREATE, possibleSizes} from "../../utils/consts"
+import {createOrder, updateOrder} from "../../http/orderApi"
+import DropdownMultiselect from 'react-multiselect-dropdown-bootstrap'
+import data from "bootstrap/js/src/dom/data";
+import {Multiselect} from "multiselect-react-dropdown";
 
-const ShoesModal = observer(({show, onHide, actionName, context}) => {
+const ShoesModal = observer(({show, onHide, actionName}) => {
     const {shoes, type, brand} = useContext(Context)
     const [info, setInfo] = useState([])
     const [file, setFile] = useState(null)
+    const [validated, setValidated] = useState(false)
 
     useEffect(() => {
         fetchTypes().then(data => type.setTypes(data.rows))
         fetchBrands().then(data => brand.setBrands(data.rows))
-    }, [])
+        if (actionName === 'Change' && show) {
+            console.log(shoes.selected.id)
+            fetchOnePairOfShoes(shoes.selected.id)
+                .then(data => {
+                    setInfo(data.info.map(item => {
+                        return {
+                            number: item.id,
+                            title: item.title,
+                            description: item.description
+                        }
+                    }))
+                    return data
+                })
+                .then(data => {
+                    shoes.setSelectedSizes(data.sizes.map(item => item.sizeValue))
+                })
+        }
+    }, [show])
+
 
     const addInfo = () => {
         setInfo([...info, {title: '', description: '', number: Date.now()}])
@@ -35,6 +66,7 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
         formData.append('brandId', shoes.selected.brand.id)
         formData.append('typeId', shoes.selected.type.id)
         formData.append('info', JSON.stringify(info))
+        formData.append('sizes', JSON.stringify(shoes.selectedSizes))
         return formData
     }
     const addShoes = () => {
@@ -52,6 +84,7 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                         shoes.setTotalCount(data.count)
                     })
                 onHide()
+                setValidated(false)
             })
             .catch(err => alert(err))
     }
@@ -71,14 +104,35 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                         shoes.setTotalCount(data.count)
                     })
                 onHide()
+                setValidated(false)
             })
             .catch(err => alert(err))
+    }
+
+    const handleSubmit = (event) => {
+        console.log('here')
+        const form = event.currentTarget
+        event.preventDefault()
+        if (form.checkValidity() === false || !shoes.selected.type.name || !shoes.selected.brand.name) {
+            event.stopPropagation()
+            setValidated(true)
+            alert('not correct data')
+        } else {
+            if (actionName === 'Create') {
+                addShoes()
+            } else {
+                changeShoes()
+            }
+        }
     }
 
     return (
         <Modal
             show={show}
-            onHide={onHide}
+            onHide={() => {
+                onHide()
+                setValidated(false)
+            }}
             size='md'
             aria-labelledby='contained-modal-title-vcenter'
             centered
@@ -89,7 +143,7 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Group
                         className='mt-2 d-flex flex-row justify-content-between align-items-center'
                         controlId='validationCustom01'
@@ -119,7 +173,7 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                     </Form.Group>
                     <Form.Group
                         className='mt-2 d-flex flex-row justify-content-between align-items-center'
-                        controlId='validationCustom01'
+                        controlId='validationCustom02'
                     >
                         <div>
                             <Form.Label>
@@ -144,7 +198,7 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                     </Form.Group>
                     <Form.Group
                         className='mt-3 d-flex flex-row justify-content-between align-items-center'
-                        controlId='validationCustom01'
+                        controlId='validationCustom03'
                     >
                         <div>
                             <Form.Label>
@@ -155,12 +209,13 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                             value={shoes.selected.name}
                             onChange={e => shoes.setSelected({...shoes.selected, name: e.target.value})}
                             placeholder='Enter the name of a new shoes'
+                            required
                             style={{width: '73%'}}
                         />
                     </Form.Group>
                     <Form.Group
                         className='mt-3 d-flex flex-row justify-content-between align-items-center'
-                        controlId='validationCustom01'
+                        controlId='validationCustom04'
                     >
                         <div>
                             <Form.Label>
@@ -173,6 +228,8 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                             placeholder='Enter the price of a new shoes'
                             style={{width: '73%'}}
                             type='number'
+                            min={30}
+                            required
                         />
                     </Form.Group>
                     <Form.Group className='mt-3'>
@@ -189,6 +246,17 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                             required={actionName === 'Create'}
                         />
                     </Form.Group>
+                    <div className='mt-3' style={{height: '30%'}}>
+                        <Multiselect
+                            placeholder={'choose size'}
+                            options={possibleSizes}
+                            name='sizes'
+                            isObject={false}
+                            selectedValues={shoes.selectedSizes}
+                            onSelect={(selectedList) => shoes.setSelectedSizes(selectedList)}
+                            onRemove={(selectedList) => shoes.setSelectedSizes(selectedList)}
+                        />
+                    </div>
                     <hr/>
                     <Button
                         variant='outline-dark'
@@ -200,6 +268,7 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                         <Row key={row.number} className='mt-3'>
                             <Col md={4}>
                                 <Form.Control
+                                    required
                                     value={row.title}
                                     onChange={e => changeInfo('title', e.target.value, row.number)}
                                     placeholder='Quality name'
@@ -207,6 +276,7 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                             </Col>
                             <Col md={4}>
                                 <Form.Control
+                                    required
                                     value={row.description}
                                     onChange={e => changeInfo('description', e.target.value, row.number)}
                                     placeholder='Quality value'
@@ -222,20 +292,23 @@ const ShoesModal = observer(({show, onHide, actionName, context}) => {
                             </Col>
                         </Row>
                     )}
+                    <Modal.Footer className='mt-3'>
+                        <Button variant='outline-danger' onClick={() => {
+                            onHide()
+                            setValidated(false)
+                        }}
+                        >
+                            Close
+                        </Button>
+                        <Button
+                            variant='outline-success'
+                            type='submit'
+                        >
+                            {actionName}
+                        </Button>
+                    </Modal.Footer>
                 </Form>
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant='outline-danger' onClick={onHide}>Close</Button>
-                <Button
-                    variant='outline-success'
-                    onClick={actionName === 'Create'
-                        ? addShoes
-                        : changeShoes}
-                    type={'submit'}
-                >
-                    {actionName}
-                </Button>
-            </Modal.Footer>
         </Modal>
     )
 })

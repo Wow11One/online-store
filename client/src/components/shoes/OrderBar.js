@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
-import {SORT_PRICE_ASC} from "../utils/consts";
+import {SORT_PRICE_ASC} from "../../utils/consts";
 import {Dropdown} from "react-bootstrap";
-import {Context} from "../index";
+import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
 
 const OrderBar = observer(() => {

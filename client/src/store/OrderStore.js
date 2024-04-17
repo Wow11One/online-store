@@ -8,7 +8,6 @@ export default class OrderStore {
         this._totalCount = 0
         this._limit = 10
         this._search = ''
-        this._basket = JSON.parse(localStorage.getItem('basket'))
         this.reset()
         this._email = ''
         this._state = ''
@@ -162,6 +161,7 @@ export default class OrderStore {
         this._surname = ''
         this._comment = ''
         this._state = ''
+        this._basket = JSON.parse(localStorage.getItem('basket'))
         this._paymentType = PAYMENT_TYPE_UPON_RECEIPT
         this._deliveryType = DELIVERY_TYPE_NOVA_POST
         this._courierAddress = ''

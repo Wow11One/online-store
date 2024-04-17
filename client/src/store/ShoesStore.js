@@ -7,12 +7,13 @@ export default class ShoesStore {
         this._selectedBrand = {}
         this._page = 1
         this._totalCount = 0
-        this._limit = 3
+        this._limit = 6
         this._search = ''
         this._sortCriteria = []
         this._selectedSortCriterion = ''
         this._selectedSize = 0
-        this._selected = {info: [], sizes: [], brand: {id: 0}, type: {id: 0}, name: '', price: 0, id: -2}
+        this._selected = {info: [], sizes: [], brand: {id: 0}, type: {id: 0}, name: '', price: 30}
+        this._selectedSizes = []
         makeAutoObservable(this)
     }
 
@@ -58,6 +59,13 @@ export default class ShoesStore {
         this._selectedSize = value;
     }
 
+    setSelectedSizes(value) {
+        this._selectedSizes = value;
+    }
+
+    get selectedSizes() {
+        return this._selectedSizes;
+    }
 
     get selected() {
         return this._selected;

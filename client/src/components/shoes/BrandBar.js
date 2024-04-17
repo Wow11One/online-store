@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {observer} from "mobx-react-lite";
-import {Context} from "../index";
+import {Context} from "../../index";
 import {Card, Dropdown, Row} from "react-bootstrap";
 
 const BrandBar = observer(() => {

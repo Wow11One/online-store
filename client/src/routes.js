@@ -1,17 +1,17 @@
 import Admin from "./pages/Admin";
 import {
     ADMIN_ROUTE,
-    BASKET_ROUTE,
     SHOES_ROUTE,
     LOGIN_ROUTE,
     ORDER_PAGE_ROUTE,
     REGISTRATION_ROUTE,
-    SHOP_ROUTE
+    SHOP_ROUTE, ERROR_ROUTE
 } from "./utils/consts";
 import Auth from "./pages/Auth";
 import Shop from "./pages/Shop";
 import ShoesPage from "./pages/ShoesPage";
 import OrderPage from "./pages/OrderPage";
+import ErrorPage from "./pages/ErrorPage";
 
 export const authRoutes = [
     {
@@ -34,6 +34,10 @@ export const authRoutes = [
 ]
 
 export const publicRoutes = [
+    {
+        path: ERROR_ROUTE,
+        Component: ErrorPage
+    },
     {
         path: SHOP_ROUTE,
         Component: Shop

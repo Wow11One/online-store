@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react'
 import {Button, Row, Table} from "react-bootstrap";
-import Pages from "../Pages";
+import Pages from "../shared/Pages";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
 import {fetchAllOrders} from "../../http/orderApi";

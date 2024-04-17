@@ -3,7 +3,7 @@ import {FormControl, Image, Table} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
 import {SERVER_URL, SHOES_ROUTE} from "../../utils/consts";
-import DeleteButton from "../DeleteButton";
+import DeleteButton from "../shared/DeleteButton";
 import {useNavigate} from "react-router-dom";
 
 const BasketTable = observer(() => {

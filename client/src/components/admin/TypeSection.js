@@ -5,7 +5,7 @@ import {createType, deleteType, fetchTypes, updateType} from "../../http/shoesAp
 import BrandTypeTable from "./BrandTypeTable";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../index";
-import SearchBar from "../SearchBar";
+import SearchBar from "../shared/SearchBar";
 
 const TypeSection = observer(() => {
     const [modalVisible, setModalVisible] = useState(false)

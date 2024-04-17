@@ -1,50 +1,41 @@
-const {Type, Device, Brand} = require('../models/models')
 const ApiError = require('../error/ApiError')
-const {Op} = require("sequelize");
+const typeService = require('../service/typeService')
 
 class TypeController {
-    async create(req, res) {
-        const {name} = req.body
-        const type = await Type.create({name})
-        return res.json({type})
+    async create(req, res, next) {
+        try {
+            const {name} = req.body
+            const type = await typeService.create(name)
+            return res.json({type})
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
     }
 
-    async getAll(req, res) {
-        let {page, limit, search} = req.query
-        const queryParameters = {}
-        let additionalParams = {}
-        if (limit) {
-            console.log()
-            page = page || 1
-            let offset = page * limit - limit
-            additionalParams = {offset, limit}
+    async getAll(req, res, next) {
+        try {
+            const types = await typeService.getAll(req.query)
+            return res.json(types)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
         }
-        if (search && search.trim().length !== 0) {
-            queryParameters.name = {[Op.iLike]: '%' + search.trim() + '%'}
-        }
-        additionalParams.order = [['createdAt', 'asc']]
-        const types = await Type.findAndCountAll({
-            where: queryParameters,
-            ...additionalParams
-        })
-
-        return res.json(types)
     }
 
     async update(req, res, next) {
-        const {id} = req.params
-        const {name} = req.body
-        const typeToBeUpdated = await Type.findOne({where: {id}})
-        await typeToBeUpdated.update({name})
-        await typeToBeUpdated.save()
-
-        return res.json(typeToBeUpdated)
+        try {
+            const {id} = req.params
+            const {name} = req.body
+            const result = await typeService.update(id, name)
+            return res.json(result)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
     }
 
     async delete(req, res, next) {
         try {
             const {id} = req.params
-            Type.destroy({where: {id}})
+            typeService.delete(id)
         } catch (e) {
             next(ApiError.badRequest(e.message))
         }

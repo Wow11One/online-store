@@ -110,7 +110,7 @@ Order.belongsTo(User)
 Order.hasMany(OrderShoesSizes)
 OrderShoesSizes.belongsTo(Order)
 
-ShoesSizes.hasMany(OrderShoesSizes)
+ShoesSizes.hasMany(OrderShoesSizes, {onDelete: 'CASCADE'})
 OrderShoesSizes.belongsTo(ShoesSizes)
 
 Type.hasMany(Shoes, {onDelete: 'CASCADE'})

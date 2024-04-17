@@ -1,7 +1,7 @@
 import React from 'react';
 import {Card, Col, Image} from "react-bootstrap";
 import {useNavigate} from 'react-router-dom'
-import {SHOES_ROUTE, SERVER_URL} from "../utils/consts";
+import {SHOES_ROUTE, SERVER_URL} from "../../utils/consts";
 
 const ShoesItem = ({shoes}) => {
     const navigate = useNavigate()
