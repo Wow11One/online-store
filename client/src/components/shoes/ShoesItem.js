@@ -15,7 +15,7 @@ const ShoesItem = ({shoes}) => {
                 className='mt-3 rounded-0'
                 style={{borderColor: 'white', cursor: 'pointer', minHeight: 340}}
             >
-                <Image src={SERVER_URL + shoes.img}/>
+                <Image src={shoes.image}/>
                 <div className='p-2'>
                     <div className='mt-1 d-flex justify-content-between align-items-center'>
                         <div className='text-black-50'>

@@ -9,6 +9,7 @@ import {fetchBrands, fetchShoesList, fetchSortCriteria, fetchTypes} from "../htt
 import Pages from "../components/shared/Pages";
 import SearchBar from "../components/shared/SearchBar";
 import OrderBar from "../components/shoes/OrderBar";
+import {SORT_PRICE_ASC, SORT_PRICE_DESC} from '../utils/consts';
 
 const Shop = observer(() => {
     const {shoes, brand, type} = useContext(Context)
@@ -18,10 +19,10 @@ const Shop = observer(() => {
             brand.setBrands(data.rows)
             shoes.setSelectedBrand({})
         })
-        fetchSortCriteria().then(data => {
-            shoes.setSortCriteria(data)
-            shoes.setSelectedSortCriterion(data[0] || '')
-        })
+
+            shoes.setSortCriteria([SORT_PRICE_ASC, SORT_PRICE_DESC])
+            shoes.setSelectedSortCriterion(SORT_PRICE_ASC)
+
 
         fetchShoesList(undefined,
             undefined,

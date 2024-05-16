@@ -31,7 +31,7 @@ const ShoesPage = observer(() => {
                 amount: 1,
                 name: currShoes.name,
                 price: currShoes.price,
-                img: currShoes.img,
+                image: currShoes.image,
                 size: shoes.selectedSize.sizeValue
             })
         }
@@ -49,7 +49,7 @@ const ShoesPage = observer(() => {
         <Container className='mt-4'>
             <Row>
                 <Col md={5}>
-                    <Image width={'100%'} height={500} src={SERVER_URL + currShoes.img}/>
+                    <Image width={'100%'} height={500} src={currShoes.image}/>
                 </Col>
                 <Col md={7}>
                     <Row className='justify-content-between mt-4'>

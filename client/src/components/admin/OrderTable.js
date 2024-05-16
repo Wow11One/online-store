@@ -19,6 +19,7 @@ const OrderTable = observer(() => {
             .then(data => {
                 order.setOrders(data.rows)
                 order.setTotalCount(data.count)
+                console.log(data.rows)
             })
     }
 
@@ -42,8 +43,8 @@ const OrderTable = observer(() => {
                 <tr>
                     <th>№</th>
                     <th>State</th>
-                    <th>Username</th>
-                    <th>User email</th>
+                    <th>Name</th>
+                    <th>Surname</th>
                     <th>Created</th>
                     <th>Change</th>
                     <th>Show</th>
@@ -55,8 +56,8 @@ const OrderTable = observer(() => {
                     <tr key={item.id}>
                         <td>{(index + 1) + order.limit * (order.page - 1)}</td>
                         <td>{item.state}</td>
-                        <td>{item.userName + ' ' + item.userSurname}</td>
-                        <td>{item.user.email}</td>
+                        <td>{item.username}</td>
+                        <td>{item.userSurname}</td>
                         <td>{item.createdAt.replace(/T/, ' ').replace(/\..+/, '')}</td>
                         <td>
                             <Button

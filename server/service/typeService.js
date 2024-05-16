@@ -3,8 +3,7 @@ const {Op} = require('sequelize')
 
 class TypeService {
     async create(name) {
-        const type = await Type.create({name})
-        return type
+        return await Type.create({name})
     }
 
     async getAll(body) {

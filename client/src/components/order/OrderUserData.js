@@ -23,12 +23,9 @@ const OrderUserDataForm = observer(() => {
                         <Form.Control
                             required
                             disabled
-                            value={order.email}
+                            value={order.email || user.user.email}
                             style={{width: 350}}
                         />
-                        <Form.Control.Feedback type={'invalid'}>
-                            First name can't be empty
-                        </Form.Control.Feedback>
                     </div>
                 </Form.Group>
                 <Form.Group

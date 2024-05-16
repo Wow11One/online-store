@@ -22,8 +22,6 @@ import {
     updateOrder
 } from "../http/orderApi";
 import {useLocation, useParams} from "react-router-dom";
-import {check} from "../http/userApi";
-import data from "bootstrap/js/src/dom/data";
 import OrderStateFilter from "../components/admin/OrderStateFilter";
 import OrderHeader from "../components/order/OrderHeader";
 
@@ -44,8 +42,8 @@ const OrderPage = observer(() => {
             fetchOneOrder(id)
                 .then(data => {
                     console.log(data)
-                    order.setEmail(data.user.email)
-                    order.setFirstName(data.userName)
+                    order.setEmail('data.user.email')
+                    order.setFirstName(data.username)
                     order.setSurname(data.userSurname)
                     order.setComment(data.comment)
                     order.setPaymentType(data.paymentType)
@@ -61,15 +59,15 @@ const OrderPage = observer(() => {
                     } else {
                         order.setCourierAddress(data.address)
                     }
-                    const basket = data.order_shoes_sizes.map(item => {
+                    const basket = data.orderShoesSizes.map(item => {
                         let order = {
-                            id: item.shoesSizeId,
+                            id: item.id,
                             amount: item.amount,
-                            size: item.shoes_size.sizeValue,
-                            name: item.shoes_size.sho.name,
-                            price: item.shoes_size.sho.price,
-                            img: item.shoes_size.sho.img,
-                            shoesId: item.shoes_size.sho.id
+                            size: item.shoesSize.sizeValue,
+                            name: item.shoesSize.shoes.name,
+                            price: item.shoesSize.shoes.price,
+                            image: item.shoesSize.shoes.image,
+                            shoesId: item.shoesSize.shoes.id
                         }
                         return order
                     })
@@ -77,9 +75,9 @@ const OrderPage = observer(() => {
                 })
         } else {
             order.reset()
-            check().then(data => {
-                order.setEmail(data.email)
-            })
+            // check().then(data => {
+            //     order.setEmail(data.email)
+            // })
         }
     }
 
@@ -119,9 +117,13 @@ const OrderPage = observer(() => {
             formData.set('basket', JSON.stringify(order.basket))
 
             if (order.pageType === ORDER_PAGE_TYPE_CREATE) {
-                createOrder(formData).then(data => alert('order is created')).catch(err => alert(err))
-                order.setBasket([])
-                localStorage.setItem('basket', JSON.stringify([]))
+                createOrder(formData)
+                    .then(data => {
+                        alert('order is created');
+                        order.setBasket([]);
+                        localStorage.setItem('basket', JSON.stringify([]));
+                    })
+                    .catch(err => alert(err))
             } else {
                 updateOrder(formData).then(data => alert('order is changed')).catch(err => alert(err))
             }

@@ -44,7 +44,7 @@ const BasketTable = observer(() => {
                     <td><Image
                         width={50}
                         height={50}
-                        src={SERVER_URL + item.img}
+                        src={item.image}
                         style={{cursor: 'pointer'}}
                         onClick={() => navigate(SHOES_ROUTE + '/' + item.shoesId)}
                     /></td>
